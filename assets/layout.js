@@ -1,5 +1,5 @@
 // layout.js
-// Highlight active sidebar links based on the ?path query parameter
+// Highlight active sidebar links based on the current URL path
 
 document.addEventListener('DOMContentLoaded', highlightActiveSidebarLink);
 
@@ -7,8 +7,7 @@ function highlightActiveSidebarLink() {
   const links = document.querySelectorAll('.sidebar .nav-link[href]');
   const collapses = document.querySelectorAll('.sidebar .collapse');
 
-  const params = new URLSearchParams(window.location.search);
-  const currentPage = params.get('path') || 'home';
+  const currentPath = window.location.pathname;
 
   // Reset active states
   links.forEach(link => {
@@ -27,7 +26,7 @@ function highlightActiveSidebarLink() {
   const activeLink = Array.from(links).find(link => {
     try {
       const url = new URL(link.getAttribute('href'), window.location.origin);
-      return url.searchParams.get('path') === currentPage;
+      return url.pathname === currentPath;
     } catch (e) {
       return false;
     }

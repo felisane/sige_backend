@@ -6,7 +6,7 @@
   <title>Nova Venda | SIGE</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
-  <link href="../../style.css" rel="stylesheet">
+  <link href="<?= base_url('assets/style.css'); ?>" rel="stylesheet">
   <style>
     .toast { position: fixed; top: 20px; right: 20px; z-index: 9999; }
   </style>
@@ -63,8 +63,8 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="../../layout.js"></script>
-  <script src="db.js"></script>
+  <script src="<?= base_url('assets/layout.js'); ?>"></script>
+  <script src="<?= base_url('assets/db.js'); ?>"></script>
   <script>
     document.addEventListener('DOMContentLoaded', function() {
       const clienteList = document.getElementById('clientesList');

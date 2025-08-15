@@ -8,7 +8,7 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
   <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.bootstrap5.min.css">
-  <link href="../../style.css" rel="stylesheet">
+  <link href="<?= base_url('assets/style.css'); ?>" rel="stylesheet">
 </head>
 <body class="d-flex min-vh-100 bg-light text-dark">
 <?php $this->load->view('navbar'); ?>
@@ -38,7 +38,7 @@
                 <td>Kz 8.000</td>
                 <td>20</td>
                 <td>
-                  <button class="btn btn-sm btn-primary me-1" onclick="window.location.href='index.php?path=editar_produto'"><i class="bi bi-pencil"></i></button>
+                  <button class="btn btn-sm btn-primary me-1" onclick="window.location.href='<?= site_url('produtos/editar'); ?>'"><i class="bi bi-pencil"></i></button>
                   <button class="btn btn-sm btn-danger me-1" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal"><i class="bi bi-trash"></i></button>
                   <button class="btn btn-sm btn-secondary" data-bs-toggle="modal" data-bs-target="#historyModal"><i class="bi bi-clock-history"></i></button>
                 </td>
@@ -50,7 +50,7 @@
                 <td>Kz 2.500</td>
                 <td>35</td>
                 <td>
-                  <button class="btn btn-sm btn-primary me-1" onclick="window.location.href='index.php?path=editar_produto'"><i class="bi bi-pencil"></i></button>
+                  <button class="btn btn-sm btn-primary me-1" onclick="window.location.href='<?= site_url('produtos/editar'); ?>'"><i class="bi bi-pencil"></i></button>
                   <button class="btn btn-sm btn-danger me-1" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal"><i class="bi bi-trash"></i></button>
                   <button class="btn btn-sm btn-secondary" data-bs-toggle="modal" data-bs-target="#historyModal"><i class="bi bi-clock-history"></i></button>
                 </td>
@@ -62,7 +62,7 @@
                 <td>Kz 12.000</td>
                 <td>15</td>
                 <td>
-                  <button class="btn btn-sm btn-primary me-1" onclick="window.location.href='index.php?path=editar_produto'"><i class="bi bi-pencil"></i></button>
+                  <button class="btn btn-sm btn-primary me-1" onclick="window.location.href='<?= site_url('produtos/editar'); ?>'"><i class="bi bi-pencil"></i></button>
                   <button class="btn btn-sm btn-danger me-1" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal"><i class="bi bi-trash"></i></button>
                   <button class="btn btn-sm btn-secondary" data-bs-toggle="modal" data-bs-target="#historyModal"><i class="bi bi-clock-history"></i></button>
                 </td>
@@ -141,7 +141,7 @@
       }
     });
   </script>
-  <script src="../../layout.js"></script>
+  <script src="<?= base_url('assets/layout.js'); ?>"></script>
 </body>
 </html>
 
