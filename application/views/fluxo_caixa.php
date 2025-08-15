@@ -8,7 +8,7 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
   <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.bootstrap5.min.css">
-  <link href="../../style.css" rel="stylesheet">
+  <link href="<?= base_url('assets/style.css'); ?>" rel="stylesheet">
 </head>
 <body class="d-flex min-vh-100 bg-light text-dark">
 <?php $this->load->view('navbar'); ?>
@@ -17,7 +17,7 @@
 <div class="container mt-5">
       <div class="d-flex justify-content-between align-items-center mb-4">
         <h3>Fluxo de Caixa</h3>
-        <a href="index.html" class="btn btn-secondary"><i class="bi bi-arrow-left"></i> Voltar</a>
+        <a href="<?= site_url('home'); ?>" class="btn btn-secondary"><i class="bi bi-arrow-left"></i> Voltar</a>
       </div>
 
       <div class="card mb-4">
@@ -304,6 +304,6 @@
       calcularTotais();
     });
   </script>
-  <script src="../../layout.js"></script>
+  <script src="<?= base_url('assets/layout.js'); ?>"></script>
 </body>
 </html>
