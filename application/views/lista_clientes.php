@@ -7,8 +7,8 @@
   <link href="../../style.css" rel="stylesheet">
 </head>
 <body class="d-flex min-vh-100 bg-light text-dark">
-<?php include __DIR__.'/navbar.php'; ?>
-<?php include __DIR__.'/sidebar.php'; ?>
+<?php $this->load->view('navbar'); ?>
+<?php $this->load->view('sidebar'); ?>
 <div class="container mt-5">
   <h3>Lista de Clientes</h3>
   <table class="table table-striped table-hover align-middle">
