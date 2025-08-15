@@ -4,12 +4,14 @@ body {
 
 .sidebar {
   width: 250px;
+  top: 56px;
 }
 
 .content {
   margin-left: 250px;
   padding: 20px;
   flex: 1;
+  margin-top: 56px;
 }
 
 .card-title {
