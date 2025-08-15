@@ -4,7 +4,7 @@
   This file is loaded dynamically into pages via layout.js.
   The right side shows a user greeting and icon.
 -->
-<nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm px-4 mb-4">
+<nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm px-4 fixed-top">
   <!-- Container da navbar com alinhamento -->
   <div class="container-fluid d-flex align-items-center justify-content-between">
     <span class="navbar-brand mb-0 h1">Painel de Controle</span>
