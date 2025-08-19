@@ -30,7 +30,7 @@
             <!-- Campo para o nome do cliente -->
             <div class="mb-3">
               <label for="nome" class="form-label">Nome completo</label>
-              <input type="text" class="form-control" id="nome" placeholder="Ex: João da Silva" required autocomplete="off">
+              <input type="text" class="form-control" id="nome" name="nome" placeholder="Ex: João da Silva" required autocomplete="off">
             </div>
             <!-- Campo para o endereço do cliente -->
             <div class="mb-3">
@@ -40,7 +40,7 @@
             <!-- Campo para o telefone do cliente -->
             <div class="mb-3">
               <label for="telefone" class="form-label">Telefone</label>
-              <input type="tel" class="form-control" id="telefone" placeholder="Ex: 923 000 000" required autocomplete="off">
+              <input type="tel" class="form-control" id="telefone" name="telefone" placeholder="Ex: 923 000 000" required autocomplete="off">
             </div>
             <button type="submit" class="btn btn-primary"><i class="bi bi-save"></i> Salvar Cliente</button>
           </form>
@@ -78,12 +78,25 @@
     <script>
     document.addEventListener('DOMContentLoaded', function() {
       const form = document.getElementById('clienteForm');
-      form.onsubmit = function(event) {
+      form.addEventListener('submit', function(event) {
         event.preventDefault();
-        // Simulate success (replace with real logic)
-        showToast('toast-success');
-        form.reset();
-      };
+        const formData = new FormData(form);
+        fetch('<?= base_url('clientes/salvar'); ?>', {
+          method: 'POST',
+          body: formData
+        })
+        .then(response => {
+          if (!response.ok) throw new Error();
+          return response.json();
+        })
+        .then(() => {
+          showToast('toast-success');
+          form.reset();
+        })
+        .catch(() => {
+          showToast('toast-error');
+        });
+      });
     });
 
     function showToast(id) {
