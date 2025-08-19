@@ -20,8 +20,9 @@ class Clientes extends CI_Controller {
     {
         $this->load->model('Cliente_model');
         $dados = [
-            'nome'  => $this->input->post('nome'),
-            'email' => $this->input->post('email'),
+            'nome'     => $this->input->post('nome'),
+            'telefone' => $this->input->post('telefone'),
+            'endereco' => $this->input->post('endereco'),
         ];
 
         $success = $this->Cliente_model->insert($dados);
