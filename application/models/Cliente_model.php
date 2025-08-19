@@ -16,4 +16,8 @@ class Cliente_model extends CI_Model {
     public function all() {
         return $this->get_all();
     }
+
+    public function insert($data) {
+        return $this->db->insert($this->table, $data);
+    }
 }
