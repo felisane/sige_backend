@@ -2,11 +2,18 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Cliente_model extends CI_Model {
+    protected $table = 'clientes';
+
     public function __construct() {
         parent::__construct();
+        $this->load->database();
+    }
+
+    public function get_all() {
+        return $this->db->get($this->table)->result_array();
     }
 
     public function all() {
-        return $this->db->get('clientes')->result_array();
+        return $this->get_all();
     }
 }
