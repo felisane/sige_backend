@@ -27,13 +27,10 @@ class Clientes extends CI_Controller {
 
         $success = $this->Cliente_model->insert($dados);
 
-        $status = $success ? 'success' : 'error';
-        $status_code = $success ? 201 : 500;
-
         $this->output
             ->set_content_type('application/json')
-            ->set_status_header($status_code)
-            ->set_output(json_encode(['status' => $status]));
+            ->set_status_header($success ? 201 : 500)
+            ->set_output(json_encode(['status' => $success ? 'success' : 'error']));
     }
 
     public function editar()

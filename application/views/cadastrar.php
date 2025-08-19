@@ -81,18 +81,17 @@
       form.addEventListener('submit', function(event) {
         event.preventDefault();
         const formData = new FormData(form);
-        fetch('<?= site_url('clientes/salvar'); ?>', {
+        fetch('<?= base_url('clientes/salvar'); ?>', {
           method: 'POST',
           body: formData
         })
-        .then(response => response.json())
-        .then(data => {
-          if (data.status === 'success') {
-            showToast('toast-success');
-            form.reset();
-          } else {
-            showToast('toast-error');
-          }
+        .then(response => {
+          if (!response.ok) throw new Error();
+          return response.json();
+        })
+        .then(() => {
+          showToast('toast-success');
+          form.reset();
         })
         .catch(() => {
           showToast('toast-error');
