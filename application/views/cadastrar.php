@@ -32,10 +32,15 @@
               <label for="nome" class="form-label">Nome completo</label>
               <input type="text" class="form-control" id="nome" name="nome" placeholder="Ex: João da Silva" required autocomplete="off">
             </div>
-            <!-- Campo para o email do cliente -->
+            <!-- Campo para o telefone do cliente -->
             <div class="mb-3">
-              <label for="email" class="form-label">Email</label>
-              <input type="email" class="form-control" id="email" name="email" placeholder="Ex: joao@email.com" required autocomplete="off">
+              <label for="telefone" class="form-label">Número de Telefone</label>
+              <input type="text" class="form-control" id="telefone" name="telefone" placeholder="Ex: 999999999" required autocomplete="off">
+            </div>
+            <!-- Campo para o endereço do cliente -->
+            <div class="mb-3">
+              <label for="endereco" class="form-label">Endereço</label>
+              <input type="text" class="form-control" id="endereco" name="endereco" placeholder="Ex: Rua A, 123" required autocomplete="off">
             </div>
             <button type="submit" class="btn btn-primary"><i class="bi bi-save"></i> Salvar Cliente</button>
           </form>

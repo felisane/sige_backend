@@ -15,10 +15,13 @@ class Migration_Create_clientes extends CI_Migration {
                 'type' => 'VARCHAR',
                 'constraint' => '100',
             ],
-            'email' => [
+            'telefone' => [
                 'type' => 'VARCHAR',
-                'constraint' => '100',
-                'unique' => TRUE,
+                'constraint' => '20',
+            ],
+            'endereco' => [
+                'type' => 'VARCHAR',
+                'constraint' => '255',
             ],
             'created_at' => [
                 'type' => 'DATETIME',

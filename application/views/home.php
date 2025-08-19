@@ -60,20 +60,22 @@
     <h5 class="mb-3">Últimos Clientes</h5>
     <table class="table table-striped table-hover align-middle">
       <thead class="table-light">
-        <tr>
-          <th>#</th>
-          <th>Nome</th>
-          <th>Email</th>
-          <th>Data</th>
-          <th>Status</th>
-          <th>Ações</th>
-        </tr>
+          <tr>
+            <th>#</th>
+            <th>Nome</th>
+            <th>Telefone</th>
+            <th>Endereço</th>
+            <th>Data</th>
+            <th>Status</th>
+            <th>Ações</th>
+          </tr>
       </thead>
       <tbody>
         <tr>
           <td>1</td>
           <td>João Silva</td>
-          <td>joao@email.com</td>
+          <td>999999999</td>
+          <td>Rua A, 123</td>
           <td>01/08/2025</td>
           <td><span class="badge bg-success">Ativo</span></td>
           <td>

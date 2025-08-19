@@ -21,10 +21,14 @@
               <label for="nome" class="form-label">Nome completo</label>
               <input type="text" class="form-control" id="nome" value="" required autocomplete="off">
             </div>
-            <div class="mb-3">
-              <label for="email" class="form-label">Email</label>
-              <input type="email" class="form-control" id="email" name="email" value="" required autocomplete="off">
-            </div>
+              <div class="mb-3">
+                <label for="telefone" class="form-label">Número de Telefone</label>
+                <input type="text" class="form-control" id="telefone" name="telefone" value="" required autocomplete="off">
+              </div>
+              <div class="mb-3">
+                <label for="endereco" class="form-label">Endereço</label>
+                <input type="text" class="form-control" id="endereco" name="endereco" value="" required autocomplete="off">
+              </div>
             <button type="submit" class="btn btn-primary"><i class="bi bi-save"></i> Atualizar Cliente</button>
           </form>
         </div>

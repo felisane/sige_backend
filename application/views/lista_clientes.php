@@ -21,19 +21,21 @@
           <div class="table-responsive">
           <table class="table table-bordered table-striped" id="tabelaClientes">
             <thead class="table-light">
-              <tr>
+                <tr>
                 <th>#</th>
                 <th>Nome</th>
-                <th>Email</th>
+                <th>Telefone</th>
+                <th>Endereço</th>
                 <th>Ações</th>
               </tr>
             </thead>
             <tbody>
-            <?php foreach (($dataVar['clientes'] ?? []) as $c): ?>
+              <?php foreach (($dataVar['clientes'] ?? []) as $c): ?>
               <tr>
                 <td><?= $c['id']; ?></td>
                 <td><?= $c['nome']; ?></td>
-                <td><?= $c['email']; ?></td>
+                <td><?= $c['telefone']; ?></td>
+                <td><?= $c['endereco']; ?></td>
                 <td>
                   <button class="btn btn-sm btn-primary me-1" onclick="window.location.href='<?= site_url('clientes/editar'); ?>'"><i class="bi bi-pencil"></i></button>
                   <button class="btn btn-sm btn-danger me-1" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal"><i class="bi bi-trash"></i></button>
