@@ -29,6 +29,7 @@ class Clientes extends CI_Controller {
 
         $this->output
             ->set_content_type('application/json')
+            ->set_status_header($success ? 201 : 500)
             ->set_output(json_encode(['status' => $success ? 'success' : 'error']));
     }
 
