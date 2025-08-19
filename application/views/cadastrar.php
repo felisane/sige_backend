@@ -81,7 +81,7 @@
       form.addEventListener('submit', function(event) {
         event.preventDefault();
         const formData = new FormData(form);
-        fetch('<?= base_url('clientes/salvar'); ?>', {
+        fetch('<?= site_url('clientes/salvar'); ?>', {
           method: 'POST',
           body: formData
         })
