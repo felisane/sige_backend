@@ -1,7 +1,7 @@
 <!--
-  navbar.html
+  navbar.php
   Centralized navbar for SIGE.
-  This file is loaded dynamically into pages via layout.js.
+  Included server-side via $this->load->view(); layout.js only handles interface behavior.
   The right side shows a user greeting and icon.
 -->
 <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm px-4 fixed-top">

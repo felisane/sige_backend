@@ -1,7 +1,7 @@
 <!--
-  sidebar.html
+  sidebar.php
   Centralized sidebar menu for SIGE.
-  This file is loaded dynamically into pages via layout.js.
+  Included server-side via $this->load->view(); layout.js only handles interface behavior.
   Each menu item is explained below.
 -->
 <!-- Barra lateral com links de navegação -->
