@@ -91,7 +91,9 @@
         .then(response => response.json())
         .then(data => {
           if (data.status === 'success') {
-            showToast('toast-success');
+            showToast('toast-success', () => {
+              window.location.href = '<?= site_url('produtos/lista'); ?>';
+            });
             form.reset();
           } else {
             showToast('toast-error');
@@ -101,10 +103,13 @@
       };
     });
 
-    function showToast(id) {
+    function showToast(id, callback) {
       const toast = document.getElementById(id);
       toast.style.display = 'block';
-      setTimeout(() => { toast.style.display = 'none'; }, 3000);
+      setTimeout(() => {
+        toast.style.display = 'none';
+        if (callback) callback();
+      }, 3000);
     }
     function hideToast(id) {
       document.getElementById(id).style.display = 'none';
