@@ -22,29 +22,29 @@
           <form id="vendaForm">
             <div class="mb-3">
               <label for="dataVenda" class="form-label">Data</label>
-              <input type="date" class="form-control" id="dataVenda" required>
+              <input type="date" class="form-control" id="dataVenda" name="data" required>
             </div>
             <div class="mb-3">
               <label for="clienteVenda" class="form-label">Cliente</label>
-              <input type="text" class="form-control" id="clienteVenda" list="clientesList" placeholder="Digite o nome do cliente" required>
+              <input type="text" class="form-control" id="clienteVenda" name="cliente" list="clientesList" placeholder="Digite o nome do cliente" required>
               <datalist id="clientesList"></datalist>
             </div>
             <div class="mb-3">
               <label for="produtoVenda" class="form-label">Produto/Serviço</label>
-              <input type="text" class="form-control" id="produtoVenda" list="produtosList" placeholder="Digite ou selecione o produto" required>
+              <input type="text" class="form-control" id="produtoVenda" name="produto" list="produtosList" placeholder="Digite ou selecione o produto" required>
               <datalist id="produtosList"></datalist>
             </div>
             <div class="mb-3 d-none" id="servicoDescricaoDiv">
               <label for="descricaoServico" class="form-label">Descrição do Serviço</label>
-              <input type="text" class="form-control" id="descricaoServico" placeholder="Descreva o serviço">
+              <input type="text" class="form-control" id="descricaoServico" name="descricao" placeholder="Descreva o serviço">
             </div>
             <div class="mb-3">
               <label for="quantidadeVenda" class="form-label">Quantidade</label>
-              <input type="number" class="form-control" id="quantidadeVenda" required>
+              <input type="number" class="form-control" id="quantidadeVenda" name="quantidade" required>
             </div>
             <div class="mb-3">
               <label for="valorVenda" class="form-label">Valor (Kz)</label>
-              <input type="number" class="form-control" id="valorVenda" required>
+              <input type="number" class="form-control" id="valorVenda" name="valor" required>
             </div>
             <button type="submit" class="btn btn-primary"><i class="bi bi-save"></i> Registrar Venda</button>
           </form>
@@ -59,6 +59,15 @@
         Venda registrada com sucesso!
       </div>
       <button type="button" class="btn-close btn-close-white me-2 m-auto" onclick="hideToast('toast-success')"></button>
+    </div>
+  </div>
+
+  <div id="toast-error" class="toast align-items-center text-bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true" style="display:none;">
+    <div class="d-flex">
+      <div class="toast-body">
+        Ocorreu um erro ao registrar a venda.
+      </div>
+      <button type="button" class="btn-close btn-close-white me-2 m-auto" onclick="hideToast('toast-error')"></button>
     </div>
   </div>
 
@@ -105,10 +114,23 @@
       const form = document.getElementById('vendaForm');
       form.addEventListener('submit', function(e) {
         e.preventDefault();
-        showToast('toast-success');
-        form.reset();
-        descDiv.classList.add('d-none');
-        descInput.required = false;
+        const formData = new FormData(form);
+        fetch('<?= site_url('caixa/registrar_venda'); ?>', {
+          method: 'POST',
+          body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.status === 'success') {
+            showToast('toast-success');
+            form.reset();
+            descDiv.classList.add('d-none');
+            descInput.required = false;
+          } else {
+            showToast('toast-error');
+          }
+        })
+        .catch(() => showToast('toast-error'));
       });
     });
 
