@@ -21,12 +21,22 @@
         <div class="card-body">
           <form id="produtoForm">
             <div class="mb-3">
+              <label for="imagem" class="form-label">Imagem do Produto</label>
+              <input type="file" class="form-control" id="imagem" accept="image/*" required>
+            </div>
+            <div class="mb-3">
               <label for="nome" class="form-label">Nome do Produto</label>
               <input type="text" class="form-control" id="nome" placeholder="Ex: Óleo de Motor" required autocomplete="off">
             </div>
             <div class="mb-3">
               <label for="categoria" class="form-label">Categoria</label>
-              <input type="text" class="form-control" id="categoria" placeholder="Ex: Lubrificantes" required autocomplete="off">
+              <select class="form-select" id="categoria" required>
+                <option value="" selected disabled>Selecione uma categoria</option>
+                <option value="Lubrificantes">Lubrificantes</option>
+                <option value="Filtros">Filtros</option>
+                <option value="Freios">Freios</option>
+                <option value="Acessórios">Acessórios</option>
+              </select>
             </div>
             <div class="mb-3">
               <label for="preco" class="form-label">Preço</label>
@@ -35,6 +45,10 @@
             <div class="mb-3">
               <label for="estoque" class="form-label">Estoque</label>
               <input type="number" class="form-control" id="estoque" placeholder="Ex: 20" required autocomplete="off">
+            </div>
+            <div class="mb-3">
+              <label for="descricao" class="form-label">Descrição</label>
+              <textarea class="form-control" id="descricao" rows="3" placeholder="Detalhes do produto"></textarea>
             </div>
             <button type="submit" class="btn btn-primary"><i class="bi bi-save"></i> Salvar Produto</button>
           </form>
