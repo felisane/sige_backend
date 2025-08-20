@@ -1,0 +1,11 @@
+CREATE TABLE `vendas` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `data` date NOT NULL,
+  `cliente` varchar(100) NOT NULL,
+  `produto` varchar(100) NOT NULL,
+  `descricao` varchar(255) DEFAULT NULL,
+  `quantidade` int(11) NOT NULL,
+  `valor` decimal(10,2) NOT NULL,
+  `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
