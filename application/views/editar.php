@@ -8,7 +8,7 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
   <link href="<?= base_url('assets/style.css'); ?>" rel="stylesheet">
   <style>
-    .toast { position: fixed; top: 20px; right: 20px; z-index: 9999; }
+    .alert-fixed { position: fixed; top: 20px; right: 20px; z-index: 9999; }
   </style>
 </head>
 <body class="d-flex min-vh-100 bg-light text-dark">
@@ -39,22 +39,9 @@
     </div>
   </div>
 
-  <!-- Toasts -->
-  <div id="toast-success" class="toast align-items-center text-bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true" style="display:none;">
-    <div class="d-flex">
-      <div class="toast-body">
-        Cliente atualizado com sucesso!
-      </div>
-      <button type="button" class="btn-close btn-close-white me-2 m-auto" onclick="hideToast('toast-success')"></button>
-    </div>
-  </div>
-  <div id="toast-error" class="toast align-items-center text-bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true" style="display:none;">
-    <div class="d-flex">
-      <div class="toast-body">
-        Ocorreu um erro ao atualizar o cliente.
-      </div>
-      <button type="button" class="btn-close btn-close-white me-2 m-auto" onclick="hideToast('toast-error')"></button>
-    </div>
+  <!-- Alertas -->
+  <div id="alert-error" class="alert alert-danger alert-fixed" role="alert" style="display:none;">
+    Ocorreu um erro ao atualizar o cliente.
   </div>
 
   <!-- Scripts -->
@@ -75,22 +62,17 @@
           return response.json();
         })
         .then(() => {
-          showToast('toast-success');
+          alert('Cliente atualizado com sucesso!');
+          window.location.href = '<?= site_url('clientes/lista'); ?>';
         })
         .catch(() => {
-          showToast('toast-error');
+          document.getElementById('alert-error').style.display = 'block';
+          setTimeout(() => {
+            document.getElementById('alert-error').style.display = 'none';
+          }, 3000);
         });
       });
     });
-
-    function showToast(id) {
-      const toast = document.getElementById(id);
-      toast.style.display = 'block';
-      setTimeout(() => { toast.style.display = 'none'; }, 3000);
-    }
-    function hideToast(id) {
-      document.getElementById(id).style.display = 'none';
-    }
   </script>
 </body>
 </html>
