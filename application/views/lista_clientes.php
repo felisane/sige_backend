@@ -37,9 +37,9 @@
                 <td><?= $c['telefone']; ?></td>
                 <td><?= $c['endereco']; ?></td>
                 <td>
-                  <button class="btn btn-sm btn-primary me-1" onclick="window.location.href='<?= site_url('clientes/editar'); ?>'"><i class="bi bi-pencil"></i></button>
-                  <button class="btn btn-sm btn-danger me-1" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal"><i class="bi bi-trash"></i></button>
-                  <button class="btn btn-sm btn-secondary" data-bs-toggle="modal" data-bs-target="#historyModal"><i class="bi bi-clock-history"></i></button>
+                    <button class="btn btn-sm btn-primary me-1" onclick="window.location.href='<?= site_url('clientes/editar'); ?>'"><i class="bi bi-pencil"></i></button>
+                    <button class="btn btn-sm btn-danger me-1" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal" data-id="<?= $c['id']; ?>"><i class="bi bi-trash"></i></button>
+                    <button class="btn btn-sm btn-secondary" data-bs-toggle="modal" data-bs-target="#historyModal"><i class="bi bi-clock-history"></i></button>
                 </td>
               </tr>
             <?php endforeach; ?>
@@ -64,7 +64,7 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-          <button type="button" class="btn btn-danger">Apagar</button>
+            <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Apagar</button>
         </div>
       </div>
     </div>
@@ -114,6 +114,25 @@
           }
         });
       }
+
+      let clienteId;
+      $('#confirmDeleteModal').on('show.bs.modal', function (event) {
+        const button = $(event.relatedTarget);
+        clienteId = button.data('id');
+      });
+
+      $('#confirmDeleteBtn').on('click', function () {
+        $.ajax({
+          url: '<?= site_url('clientes/apagar'); ?>/' + clienteId,
+          type: 'POST',
+          success: function () {
+            location.reload();
+          },
+          error: function () {
+            alert('Erro ao apagar cliente');
+          }
+        });
+      });
     });
   </script>
   <script src="<?= base_url('assets/layout.js'); ?>"></script>
