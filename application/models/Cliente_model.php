@@ -17,8 +17,16 @@ class Cliente_model extends CI_Model {
         return $this->get_all();
     }
 
+    public function get($id) {
+        return $this->db->get_where($this->table, ['id' => $id])->row_array();
+    }
+
     public function insert($data) {
         return $this->db->insert($this->table, $data);
+    }
+
+    public function update($id, $data) {
+        return $this->db->update($this->table, $data, ['id' => $id]);
     }
 
     public function delete($id) {

@@ -44,8 +44,27 @@ class Clientes extends CI_Controller {
             ->set_output(json_encode(['status' => $success ? 'success' : 'error']));
     }
 
-    public function editar()
+    public function editar($id)
     {
-        $this->load->view('editar');
+        $this->load->model('Cliente_model');
+        $cliente = $this->Cliente_model->get($id);
+        $this->load->view('editar', ['dataVar' => ['cliente' => $cliente]]);
+    }
+
+    public function atualizar($id)
+    {
+        $this->load->model('Cliente_model');
+        $dados = [
+            'nome'     => $this->input->post('nome'),
+            'telefone' => $this->input->post('telefone'),
+            'endereco' => $this->input->post('endereco'),
+        ];
+
+        $success = $this->Cliente_model->update($id, $dados);
+
+        $this->output
+            ->set_content_type('application/json')
+            ->set_status_header($success ? 200 : 500)
+            ->set_output(json_encode(['status' => $success ? 'success' : 'error']));
     }
 }
