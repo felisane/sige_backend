@@ -32,48 +32,28 @@
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td>1</td>
-                <td><img src="https://via.placeholder.com/50" alt="Óleo de Motor 5W30" class="img-thumbnail"></td>
-                <td>Óleo de Motor 5W30</td>
-                <td>Lubrificantes</td>
-                <td>Kz 8.000</td>
-                <td>20</td>
-                <td>
-                  <button class="btn btn-sm btn-info me-1" data-bs-toggle="modal" data-bs-target="#infoModal" data-nome="Óleo de Motor 5W30" data-descricao="Óleo de motor sintético 5W30 de alta performance."><i class="bi bi-info-circle"></i></button>
-                  <button class="btn btn-sm btn-primary me-1" onclick="window.location.href='<?= site_url('produtos/editar'); ?>'"><i class="bi bi-pencil"></i></button>
-                  <button class="btn btn-sm btn-danger me-1" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal"><i class="bi bi-trash"></i></button>
-                  <button class="btn btn-sm btn-secondary" data-bs-toggle="modal" data-bs-target="#historyModal"><i class="bi bi-clock-history"></i></button>
-                </td>
-              </tr>
-              <tr>
-                <td>2</td>
-                <td><img src="https://via.placeholder.com/50" alt="Filtro de Ar" class="img-thumbnail"></td>
-                <td>Filtro de Ar</td>
-                <td>Filtros</td>
-                <td>Kz 2.500</td>
-                <td>35</td>
-                <td>
-                  <button class="btn btn-sm btn-info me-1" data-bs-toggle="modal" data-bs-target="#infoModal" data-nome="Filtro de Ar" data-descricao="Filtro de ar de alta eficiência para motores."><i class="bi bi-info-circle"></i></button>
-                  <button class="btn btn-sm btn-primary me-1" onclick="window.location.href='<?= site_url('produtos/editar'); ?>'"><i class="bi bi-pencil"></i></button>
-                  <button class="btn btn-sm btn-danger me-1" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal"><i class="bi bi-trash"></i></button>
-                  <button class="btn btn-sm btn-secondary" data-bs-toggle="modal" data-bs-target="#historyModal"><i class="bi bi-clock-history"></i></button>
-                </td>
-              </tr>
-              <tr>
-                <td>3</td>
-                <td><img src="https://via.placeholder.com/50" alt="Pastilha de Freio" class="img-thumbnail"></td>
-                <td>Pastilha de Freio</td>
-                <td>Freios</td>
-                <td>Kz 12.000</td>
-                <td>15</td>
-                <td>
-                  <button class="btn btn-sm btn-info me-1" data-bs-toggle="modal" data-bs-target="#infoModal" data-nome="Pastilha de Freio" data-descricao="Pastilhas de freio resistentes ao desgaste."><i class="bi bi-info-circle"></i></button>
-                  <button class="btn btn-sm btn-primary me-1" onclick="window.location.href='<?= site_url('produtos/editar'); ?>'"><i class="bi bi-pencil"></i></button>
-                  <button class="btn btn-sm btn-danger me-1" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal"><i class="bi bi-trash"></i></button>
-                  <button class="btn btn-sm btn-secondary" data-bs-toggle="modal" data-bs-target="#historyModal"><i class="bi bi-clock-history"></i></button>
-                </td>
-              </tr>
+              <?php if (!empty($produtos)): ?>
+                <?php foreach ($produtos as $produto): ?>
+                  <tr>
+                    <td><?= $produto->id; ?></td>
+                    <td><img src="<?= base_url('uploads/' . $produto->imagem); ?>" alt="<?= $produto->nome; ?>" class="img-thumbnail" style="width:50px;"></td>
+                    <td><?= $produto->nome; ?></td>
+                    <td><?= $produto->categoria; ?></td>
+                    <td>Kz <?= number_format($produto->preco, 2, ',', '.'); ?></td>
+                    <td><?= $produto->estoque; ?></td>
+                    <td>
+                      <button class="btn btn-sm btn-info me-1" data-bs-toggle="modal" data-bs-target="#infoModal" data-nome="<?= $produto->nome; ?>" data-descricao="<?= $produto->descricao; ?>"><i class="bi bi-info-circle"></i></button>
+                      <button class="btn btn-sm btn-primary me-1" onclick="window.location.href='<?= site_url('produtos/editar/' . $produto->id); ?>'"><i class="bi bi-pencil"></i></button>
+                      <button class="btn btn-sm btn-danger me-1" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal" data-id="<?= $produto->id; ?>"><i class="bi bi-trash"></i></button>
+                      <button class="btn btn-sm btn-secondary" data-bs-toggle="modal" data-bs-target="#historyModal"><i class="bi bi-clock-history"></i></button>
+                    </td>
+                  </tr>
+                <?php endforeach; ?>
+              <?php else: ?>
+                <tr>
+                  <td colspan="7" class="text-center">Nenhum produto cadastrado.</td>
+                </tr>
+              <?php endif; ?>
             </tbody>
           </table>
           </div>
