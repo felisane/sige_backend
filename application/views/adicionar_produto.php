@@ -19,18 +19,18 @@
       <h4 class="mb-4">Adicionar Novo Produto</h4>
       <div class="card shadow-sm">
         <div class="card-body">
-          <form id="produtoForm">
+          <form id="produtoForm" enctype="multipart/form-data">
             <div class="mb-3">
               <label for="imagem" class="form-label">Imagem do Produto</label>
-              <input type="file" class="form-control" id="imagem" accept="image/*" required>
+              <input type="file" class="form-control" id="imagem" name="imagem" accept="image/*" required>
             </div>
             <div class="mb-3">
               <label for="nome" class="form-label">Nome do Produto</label>
-              <input type="text" class="form-control" id="nome" placeholder="Ex: Óleo de Motor" required autocomplete="off">
+              <input type="text" class="form-control" id="nome" name="nome" placeholder="Ex: Óleo de Motor" required autocomplete="off">
             </div>
             <div class="mb-3">
               <label for="categoria" class="form-label">Categoria</label>
-              <select class="form-select" id="categoria" required>
+              <select class="form-select" id="categoria" name="categoria" required>
                 <option value="" selected disabled>Selecione uma categoria</option>
                 <option value="Lubrificantes">Lubrificantes</option>
                 <option value="Filtros">Filtros</option>
@@ -40,15 +40,15 @@
             </div>
             <div class="mb-3">
               <label for="preco" class="form-label">Preço</label>
-              <input type="number" class="form-control" id="preco" placeholder="Ex: 8000" required autocomplete="off">
+              <input type="number" class="form-control" id="preco" name="preco" placeholder="Ex: 8000" required autocomplete="off">
             </div>
             <div class="mb-3">
               <label for="estoque" class="form-label">Estoque</label>
-              <input type="number" class="form-control" id="estoque" placeholder="Ex: 20" required autocomplete="off">
+              <input type="number" class="form-control" id="estoque" name="estoque" placeholder="Ex: 20" required autocomplete="off">
             </div>
             <div class="mb-3">
               <label for="descricao" class="form-label">Descrição</label>
-              <textarea class="form-control" id="descricao" rows="3" placeholder="Detalhes do produto"></textarea>
+              <textarea class="form-control" id="descricao" name="descricao" rows="3" placeholder="Detalhes do produto"></textarea>
             </div>
             <button type="submit" class="btn btn-primary"><i class="bi bi-save"></i> Salvar Produto</button>
           </form>
@@ -83,8 +83,21 @@
       const form = document.getElementById('produtoForm');
       form.onsubmit = function(event) {
         event.preventDefault();
-        showToast('toast-success');
-        form.reset();
+        const formData = new FormData(form);
+        fetch('<?= site_url('produtos/salvar'); ?>', {
+          method: 'POST',
+          body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.status === 'success') {
+            showToast('toast-success');
+            form.reset();
+          } else {
+            showToast('toast-error');
+          }
+        })
+        .catch(() => showToast('toast-error'));
       };
     });
 
