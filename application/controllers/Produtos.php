@@ -6,6 +6,7 @@ class Produtos extends CI_Controller {
     {
         parent::__construct();
         $this->load->model('Produto_model');
+        $this->load->model('Categoria_model');
     }
 
     public function lista()
@@ -16,7 +17,8 @@ class Produtos extends CI_Controller {
 
     public function adicionar()
     {
-        $this->load->view('adicionar_produto');
+        $data['categorias'] = $this->Categoria_model->todas();
+        $this->load->view('adicionar_produto', $data);
     }
 
     public function salvar()

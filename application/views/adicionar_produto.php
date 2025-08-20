@@ -32,10 +32,9 @@
               <label for="categoria" class="form-label">Categoria</label>
               <select class="form-select" id="categoria" name="categoria" required>
                 <option value="" selected disabled>Selecione uma categoria</option>
-                <option value="Lubrificantes">Lubrificantes</option>
-                <option value="Filtros">Filtros</option>
-                <option value="Freios">Freios</option>
-                <option value="Acessórios">Acessórios</option>
+                <?php foreach ($categorias as $categoria): ?>
+                  <option value="<?= $categoria->nome; ?>"><?= $categoria->nome; ?></option>
+                <?php endforeach; ?>
               </select>
             </div>
             <div class="mb-3">
