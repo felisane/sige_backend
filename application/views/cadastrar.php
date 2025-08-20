@@ -8,7 +8,7 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
   <link href="<?= base_url('assets/style.css'); ?>" rel="stylesheet">
   <style>
-    .toast { position: fixed; top: 20px; right: 20px; z-index: 9999; }
+    .alert-fixed { position: fixed; top: 20px; right: 20px; z-index: 9999; }
   </style>
 </head>
 <body class="d-flex min-vh-100 bg-light text-dark">
@@ -49,27 +49,23 @@
     </div>
   </div>
 
-  <!-- Toast Feedback -->
-  <!-- Toast de sucesso -->
-  <div id="toast-success" class="toast align-items-center text-bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true" style="display:none;">
-    <!-- Estrutura flexível do toast de sucesso -->
-    <div class="d-flex">
-      <!-- Mensagem de sucesso -->
-      <div class="toast-body">
-        Cliente cadastrado com sucesso!
-      </div>
-      <button type="button" class="btn-close btn-close-white me-2 m-auto" onclick="hideToast('toast-success')"></button>
-    </div>
+  <!-- Alertas -->
+  <div id="alert-error" class="alert alert-danger alert-fixed" role="alert" style="display:none;">
+    Ocorreu um erro ao cadastrar o cliente.
   </div>
-  <!-- Toast de erro -->
-  <div id="toast-error" class="toast align-items-center text-bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true" style="display:none;">
-    <!-- Estrutura flexível do toast de erro -->
-    <div class="d-flex">
-      <!-- Mensagem de erro -->
-      <div class="toast-body">
-        Ocorreu um erro ao cadastrar o cliente.
+
+  <!-- Modal de Sucesso -->
+  <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="successModalLabel">Sucesso</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          Cliente cadastrado com sucesso!
+        </div>
       </div>
-      <button type="button" class="btn-close btn-close-white me-2 m-auto" onclick="hideToast('toast-error')"></button>
     </div>
   </div>
 
@@ -90,23 +86,22 @@
           return response.json();
         })
         .then(() => {
-          showToast('toast-success');
-          form.reset();
+          const successModal = new bootstrap.Modal(document.getElementById('successModal'));
+          successModal.show();
+          setTimeout(() => {
+            successModal.hide();
+            window.location.href = '<?= site_url('clientes/lista'); ?>';
+          }, 2000);
         })
         .catch(() => {
-          showToast('toast-error');
+          const alertError = document.getElementById('alert-error');
+          alertError.style.display = 'block';
+          setTimeout(() => {
+            alertError.style.display = 'none';
+          }, 3000);
         });
       });
     });
-
-    function showToast(id) {
-      const toast = document.getElementById(id);
-      toast.style.display = 'block';
-      setTimeout(() => { toast.style.display = 'none'; }, 3000);
-    }
-    function hideToast(id) {
-      document.getElementById(id).style.display = 'none';
-    }
   </script>
 </body>
 </html>
