@@ -28,7 +28,6 @@
                 <th>Categoria</th>
                 <th>Preço</th>
                 <th>Estoque</th>
-                <th>Descrição</th>
                 <th>Ações</th>
               </tr>
             </thead>
@@ -40,9 +39,8 @@
                 <td>Lubrificantes</td>
                 <td>Kz 8.000</td>
                 <td>20</td>
-                <td class="text-truncate" style="max-width: 200px;">Óleo de motor sintético 5W30 de alta performance.</td>
                 <td>
-                  <button class="btn btn-sm btn-info me-1" data-bs-toggle="modal" data-bs-target="#infoModal" data-nome="Óleo de Motor 5W30" data-descricao="Óleo de motor sintético 5W30 de alta performance.">Ver</button>
+                  <button class="btn btn-sm btn-info me-1" data-bs-toggle="modal" data-bs-target="#infoModal" data-nome="Óleo de Motor 5W30" data-descricao="Óleo de motor sintético 5W30 de alta performance."><i class="bi bi-info-circle"></i></button>
                   <button class="btn btn-sm btn-primary me-1" onclick="window.location.href='<?= site_url('produtos/editar'); ?>'"><i class="bi bi-pencil"></i></button>
                   <button class="btn btn-sm btn-danger me-1" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal"><i class="bi bi-trash"></i></button>
                   <button class="btn btn-sm btn-secondary" data-bs-toggle="modal" data-bs-target="#historyModal"><i class="bi bi-clock-history"></i></button>
@@ -55,9 +53,8 @@
                 <td>Filtros</td>
                 <td>Kz 2.500</td>
                 <td>35</td>
-                <td class="text-truncate" style="max-width: 200px;">Filtro de ar de alta eficiência para motores.</td>
                 <td>
-                  <button class="btn btn-sm btn-info me-1" data-bs-toggle="modal" data-bs-target="#infoModal" data-nome="Filtro de Ar" data-descricao="Filtro de ar de alta eficiência para motores.">Ver</button>
+                  <button class="btn btn-sm btn-info me-1" data-bs-toggle="modal" data-bs-target="#infoModal" data-nome="Filtro de Ar" data-descricao="Filtro de ar de alta eficiência para motores."><i class="bi bi-info-circle"></i></button>
                   <button class="btn btn-sm btn-primary me-1" onclick="window.location.href='<?= site_url('produtos/editar'); ?>'"><i class="bi bi-pencil"></i></button>
                   <button class="btn btn-sm btn-danger me-1" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal"><i class="bi bi-trash"></i></button>
                   <button class="btn btn-sm btn-secondary" data-bs-toggle="modal" data-bs-target="#historyModal"><i class="bi bi-clock-history"></i></button>
@@ -70,9 +67,8 @@
                 <td>Freios</td>
                 <td>Kz 12.000</td>
                 <td>15</td>
-                <td class="text-truncate" style="max-width: 200px;">Pastilhas de freio resistentes ao desgaste.</td>
                 <td>
-                  <button class="btn btn-sm btn-info me-1" data-bs-toggle="modal" data-bs-target="#infoModal" data-nome="Pastilha de Freio" data-descricao="Pastilhas de freio resistentes ao desgaste.">Ver</button>
+                  <button class="btn btn-sm btn-info me-1" data-bs-toggle="modal" data-bs-target="#infoModal" data-nome="Pastilha de Freio" data-descricao="Pastilhas de freio resistentes ao desgaste."><i class="bi bi-info-circle"></i></button>
                   <button class="btn btn-sm btn-primary me-1" onclick="window.location.href='<?= site_url('produtos/editar'); ?>'"><i class="bi bi-pencil"></i></button>
                   <button class="btn btn-sm btn-danger me-1" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal"><i class="bi bi-trash"></i></button>
                   <button class="btn btn-sm btn-secondary" data-bs-toggle="modal" data-bs-target="#historyModal"><i class="bi bi-clock-history"></i></button>
