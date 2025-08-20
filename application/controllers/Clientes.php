@@ -33,6 +33,17 @@ class Clientes extends CI_Controller {
             ->set_output(json_encode(['status' => $success ? 'success' : 'error']));
     }
 
+    public function apagar($id)
+    {
+        $this->load->model('Cliente_model');
+        $success = $this->Cliente_model->delete($id);
+
+        $this->output
+            ->set_content_type('application/json')
+            ->set_status_header($success ? 200 : 500)
+            ->set_output(json_encode(['status' => $success ? 'success' : 'error']));
+    }
+
     public function editar()
     {
         $this->load->view('editar');
