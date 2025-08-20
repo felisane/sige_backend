@@ -44,6 +44,21 @@
     Ocorreu um erro ao atualizar o cliente.
   </div>
 
+  <!-- Modal de Sucesso -->
+  <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="successModalLabel">Sucesso</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          Cliente atualizado com sucesso!
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Scripts -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
   <script src="<?= base_url('assets/layout.js'); ?>"></script>
@@ -62,8 +77,12 @@
           return response.json();
         })
         .then(() => {
-          alert('Cliente atualizado com sucesso!');
-          window.location.href = '<?= site_url('clientes/lista'); ?>';
+          const successModal = new bootstrap.Modal(document.getElementById('successModal'));
+          successModal.show();
+          setTimeout(() => {
+            successModal.hide();
+            window.location.href = '<?= site_url('clientes/lista'); ?>';
+          }, 2000);
         })
         .catch(() => {
           document.getElementById('alert-error').style.display = 'block';
