@@ -49,10 +49,6 @@
                     </td>
                   </tr>
                 <?php endforeach; ?>
-              <?php else: ?>
-                <tr>
-                  <td colspan="7" class="text-center">Nenhum produto cadastrado.</td>
-                </tr>
               <?php endif; ?>
             </tbody>
           </table>
@@ -138,7 +134,8 @@
           dom: "<'d-flex justify-content-between align-items-center flex-wrap mb-3'<'d-flex align-items-center gap-2'lf>B>rtip",
           buttons: ['copy', 'csv', 'excel', 'pdf', 'print'],
           language: {
-            url: 'https://cdn.datatables.net/plug-ins/1.13.6/i18n/pt-PT.json'
+            url: 'https://cdn.datatables.net/plug-ins/1.13.6/i18n/pt-PT.json',
+            emptyTable: 'Nenhum produto cadastrado.'
           }
         });
       }
