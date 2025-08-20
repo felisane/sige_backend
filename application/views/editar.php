@@ -16,19 +16,19 @@
       <h4 class="mb-4">Editar Cliente</h4>
       <div class="card shadow-sm">
         <div class="card-body">
-          <form>
+          <form id="clienteForm">
             <div class="mb-3">
               <label for="nome" class="form-label">Nome completo</label>
-              <input type="text" class="form-control" id="nome" value="" required autocomplete="off">
+              <input type="text" class="form-control" id="nome" name="nome" value="<?= $dataVar['cliente']['nome']; ?>" required autocomplete="off">
             </div>
-              <div class="mb-3">
-                <label for="telefone" class="form-label">Número de Telefone</label>
-                <input type="text" class="form-control" id="telefone" name="telefone" value="" required autocomplete="off">
-              </div>
-              <div class="mb-3">
-                <label for="endereco" class="form-label">Endereço</label>
-                <input type="text" class="form-control" id="endereco" name="endereco" value="" required autocomplete="off">
-              </div>
+            <div class="mb-3">
+              <label for="telefone" class="form-label">Número de Telefone</label>
+              <input type="text" class="form-control" id="telefone" name="telefone" value="<?= $dataVar['cliente']['telefone']; ?>" required autocomplete="off">
+            </div>
+            <div class="mb-3">
+              <label for="endereco" class="form-label">Endereço</label>
+              <input type="text" class="form-control" id="endereco" name="endereco" value="<?= $dataVar['cliente']['endereco']; ?>" required autocomplete="off">
+            </div>
             <button type="submit" class="btn btn-primary"><i class="bi bi-save"></i> Atualizar Cliente</button>
           </form>
         </div>
@@ -39,6 +39,30 @@
   <!-- Scripts -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
   <script src="<?= base_url('assets/layout.js'); ?>"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const form = document.getElementById('clienteForm');
+      form.addEventListener('submit', function(event) {
+        event.preventDefault();
+        const formData = new FormData(form);
+        fetch('<?= site_url('clientes/atualizar/' . $dataVar['cliente']['id']); ?>', {
+          method: 'POST',
+          body: formData
+        })
+        .then(response => {
+          if (!response.ok) throw new Error();
+          return response.json();
+        })
+        .then(() => {
+          alert('Cliente atualizado com sucesso!');
+          window.location.href = '<?= site_url('clientes/lista'); ?>';
+        })
+        .catch(() => {
+          alert('Ocorreu um erro ao atualizar o cliente.');
+        });
+      });
+    });
+  </script>
 </body>
 </html>
 

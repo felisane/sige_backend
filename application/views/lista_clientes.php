@@ -37,7 +37,7 @@
                 <td><?= $c['telefone']; ?></td>
                 <td><?= $c['endereco']; ?></td>
                 <td>
-                    <button class="btn btn-sm btn-primary me-1" onclick="window.location.href='<?= site_url('clientes/editar'); ?>'"><i class="bi bi-pencil"></i></button>
+                    <button class="btn btn-sm btn-primary me-1" onclick="window.location.href='<?= site_url('clientes/editar/'.$c['id']); ?>'"><i class="bi bi-pencil"></i></button>
                     <button class="btn btn-sm btn-danger me-1" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal" data-id="<?= $c['id']; ?>"><i class="bi bi-trash"></i></button>
                     <button class="btn btn-sm btn-secondary" data-bs-toggle="modal" data-bs-target="#historyModal"><i class="bi bi-clock-history"></i></button>
                 </td>
