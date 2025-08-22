@@ -140,8 +140,9 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
   <script>
     $(document).ready(function () {
+      let tabela;
       if (!$.fn.DataTable.isDataTable('#tabelaProdutos')) {
-        $('#tabelaProdutos').DataTable({
+        tabela = $('#tabelaProdutos').DataTable({
           dom: "<'d-flex justify-content-between align-items-center flex-wrap mb-3'<'d-flex align-items-center gap-2'lf>B>rtip",
           buttons: ['copy', 'csv', 'excel', 'pdf', 'print'],
           language: {
@@ -149,6 +150,8 @@
             emptyTable: 'Nenhum produto cadastrado.'
           }
         });
+      } else {
+        tabela = $('#tabelaProdutos').DataTable();
       }
 
         const infoModal = document.getElementById('infoModal');
@@ -168,6 +171,34 @@
           const modalImg = imageModal.querySelector('#modalImage');
           modalImg.src = src;
           modalImg.alt = alt;
+        });
+
+        let produtoId;
+        const confirmDeleteModal = document.getElementById('confirmDeleteModal');
+        confirmDeleteModal.addEventListener('show.bs.modal', function (event) {
+          const button = event.relatedTarget;
+          produtoId = button.getAttribute('data-id');
+        });
+
+        const deleteBtn = confirmDeleteModal.querySelector('.btn-danger');
+        deleteBtn.addEventListener('click', function () {
+          if (!produtoId) return;
+          $.ajax({
+            url: '<?= site_url('produtos/apagar/'); ?>' + produtoId,
+            type: 'POST',
+            dataType: 'json',
+            success: function (response) {
+              if (response.status === 'success') {
+                tabela.row($('button[data-id="' + produtoId + '"]').parents('tr')).remove().draw();
+                bootstrap.Modal.getInstance(confirmDeleteModal).hide();
+              } else {
+                alert('Erro ao apagar produto.');
+              }
+            },
+            error: function () {
+              alert('Erro ao apagar produto.');
+            }
+          });
         });
       });
     </script>

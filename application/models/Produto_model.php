@@ -14,4 +14,8 @@ class Produto_model extends CI_Model {
     public function todos() {
         return $this->db->get('produtos')->result();
     }
+
+    public function apagar($id) {
+        return $this->db->delete('produtos', ['id' => $id]);
+    }
 }
