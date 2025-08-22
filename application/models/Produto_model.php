@@ -18,4 +18,12 @@ class Produto_model extends CI_Model {
     public function apagar($id) {
         return $this->db->delete('produtos', ['id' => $id]);
     }
+
+    public function buscar($id) {
+        return $this->db->get_where('produtos', ['id' => $id])->row();
+    }
+
+    public function atualizar($id, $data) {
+        return $this->db->update('produtos', $data, ['id' => $id]);
+    }
 }
