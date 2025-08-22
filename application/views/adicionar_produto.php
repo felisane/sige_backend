@@ -56,6 +56,12 @@
     </div>
   </div>
 
+  <div id="progressContainer" class="d-none position-fixed top-50 start-50 translate-middle w-50 text-center">
+    <div class="progress">
+      <div id="progressBar" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%">0%</div>
+    </div>
+  </div>
+
   <!-- Toast Feedback -->
   <div id="toast-success" class="toast align-items-center text-bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true" style="display:none;">
     <div class="d-flex">
@@ -80,25 +86,51 @@
   <script>
     document.addEventListener('DOMContentLoaded', function() {
       const form = document.getElementById('produtoForm');
+      const progressContainer = document.getElementById('progressContainer');
+      const progressBar = document.getElementById('progressBar');
+
       form.onsubmit = function(event) {
         event.preventDefault();
         const formData = new FormData(form);
-        fetch('<?= site_url('produtos/salvar'); ?>', {
-          method: 'POST',
-          body: formData
-        })
-        .then(response => response.json())
-        .then(data => {
-          if (data.status === 'success') {
-            showToast('toast-success', () => {
-              window.location.href = '<?= site_url('produtos/lista'); ?>';
-            });
-            form.reset();
-          } else {
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', '<?= site_url('produtos/salvar'); ?>');
+
+        xhr.upload.addEventListener('progress', function(e) {
+          if (e.lengthComputable) {
+            const percent = Math.round((e.loaded / e.total) * 100);
+            progressBar.style.width = percent + '%';
+            progressBar.textContent = percent + '%';
+          }
+        });
+
+        xhr.onload = function() {
+          progressContainer.classList.add('d-none');
+          progressBar.style.width = '0%';
+          progressBar.textContent = '0%';
+          try {
+            const data = JSON.parse(xhr.responseText);
+            if (data.status === 'success') {
+              showToast('toast-success', () => {
+                window.location.href = '<?= site_url('produtos/lista'); ?>';
+              });
+              form.reset();
+            } else {
+              showToast('toast-error');
+            }
+          } catch (error) {
             showToast('toast-error');
           }
-        })
-        .catch(() => showToast('toast-error'));
+        };
+
+        xhr.onerror = function() {
+          progressContainer.classList.add('d-none');
+          progressBar.style.width = '0%';
+          progressBar.textContent = '0%';
+          showToast('toast-error');
+        };
+
+        progressContainer.classList.remove('d-none');
+        xhr.send(formData);
       };
     });
 
