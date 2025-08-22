@@ -126,6 +126,13 @@
     </div>
   </div>
 
+  <!-- Loading overlay -->
+  <div id="loadingOverlay" class="d-none position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center bg-white bg-opacity-75" style="z-index: 1056;">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Processando...</span>
+    </div>
+  </div>
+
   <!-- Scripts -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
   <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
@@ -187,6 +194,9 @@
             url: '<?= site_url('produtos/apagar/'); ?>' + produtoId,
             type: 'POST',
             dataType: 'json',
+            beforeSend: function () {
+              $('#loadingOverlay').removeClass('d-none');
+            },
             success: function (response) {
               if (response.status === 'success') {
                 tabela.row($('button[data-id="' + produtoId + '"]').parents('tr')).remove().draw();
@@ -197,6 +207,9 @@
             },
             error: function () {
               alert('Erro ao apagar produto.');
+            },
+            complete: function () {
+              $('#loadingOverlay').addClass('d-none');
             }
           });
         });
