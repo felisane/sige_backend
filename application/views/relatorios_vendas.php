@@ -37,33 +37,23 @@
             <tr>
               <th>Produto</th>
               <th>Cliente</th>
-              <th>Vendedor</th>
+              <th>Quantidade</th>
               <th>Data</th>
               <th>Valor (Kz)</th>
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td>Produto A</td>
-              <td>João Silva</td>
-              <td>Maria</td>
-              <td>01/08/2025</td>
-              <td>12000</td>
-            </tr>
-            <tr>
-              <td>Produto B</td>
-              <td>Pedro Cardoso</td>
-              <td>José</td>
-              <td>02/08/2025</td>
-              <td>8000</td>
-            </tr>
-            <tr>
-              <td>Serviço C</td>
-              <td>Maria Fernandes</td>
-              <td>Luisa</td>
-              <td>03/08/2025</td>
-              <td>5000</td>
-            </tr>
+            <?php if (!empty($vendas)): ?>
+              <?php foreach ($vendas as $venda): ?>
+                <tr>
+                  <td><?= $venda->produto; ?></td>
+                  <td><?= $venda->cliente; ?></td>
+                  <td><?= $venda->quantidade; ?></td>
+                  <td><?= date('d/m/Y', strtotime($venda->data)); ?></td>
+                  <td><?= number_format($venda->valor, 2, ',', '.'); ?></td>
+                </tr>
+              <?php endforeach; ?>
+            <?php endif; ?>
           </tbody>
         </table>
       </div>

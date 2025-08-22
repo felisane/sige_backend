@@ -4,7 +4,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class Relatorios extends CI_Controller {
     public function vendas()
     {
-        $this->load->view('relatorios_vendas');
+        $this->load->model('Venda_model');
+        $data['vendas'] = $this->Venda_model->todas();
+        $this->load->view('relatorios_vendas', $data);
     }
 
     public function caixa()

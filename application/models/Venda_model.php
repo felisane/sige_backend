@@ -10,4 +10,8 @@ class Venda_model extends CI_Model {
     public function inserir($data) {
         return $this->db->insert('vendas', $data);
     }
+
+    public function todas() {
+        return $this->db->order_by('data', 'DESC')->get('vendas')->result();
+    }
 }
