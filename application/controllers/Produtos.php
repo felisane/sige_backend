@@ -54,4 +54,13 @@ class Produtos extends CI_Controller {
     {
         $this->load->view('editar_produto');
     }
+
+    public function apagar($id)
+    {
+        if ($this->Produto_model->apagar($id)) {
+            echo json_encode(['status' => 'success']);
+        } else {
+            echo json_encode(['status' => 'error']);
+        }
+    }
 }
