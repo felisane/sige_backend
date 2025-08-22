@@ -36,7 +36,7 @@
                 <?php foreach ($produtos as $produto): ?>
                   <tr>
                     <td><?= $produto->id; ?></td>
-                    <td><img src="<?= base_url('uploads/' . $produto->imagem); ?>" alt="<?= $produto->nome; ?>" class="img-thumbnail" style="width:50px;"></td>
+                    <td><img src="<?= base_url('uploads/' . $produto->imagem); ?>" alt="<?= $produto->nome; ?>" class="img-thumbnail" style="width:50px;cursor:pointer;" data-bs-toggle="modal" data-bs-target="#imageModal" data-image="<?= base_url('uploads/' . $produto->imagem); ?>"></td>
                     <td><?= $produto->nome; ?></td>
                     <td><?= $produto->categoria; ?></td>
                     <td>Kz <?= number_format($produto->preco, 2, ',', '.'); ?></td>
@@ -115,6 +115,17 @@
     </div>
   </div>
 
+  <!-- Modal de pré-visualização da imagem -->
+  <div class="modal fade" id="imageModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content">
+        <div class="modal-body p-0">
+          <img id="modalImage" src="" class="img-fluid w-100" alt="Pré-visualização">
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Scripts -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
   <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
@@ -140,16 +151,26 @@
         });
       }
 
-      const infoModal = document.getElementById('infoModal');
-      infoModal.addEventListener('show.bs.modal', function (event) {
-        const button = event.relatedTarget;
-        const nome = button.getAttribute('data-nome');
-        const descricao = button.getAttribute('data-descricao');
-        document.getElementById('infoLabel').textContent = nome;
-        document.getElementById('infoDescricao').textContent = descricao;
+        const infoModal = document.getElementById('infoModal');
+        infoModal.addEventListener('show.bs.modal', function (event) {
+          const button = event.relatedTarget;
+          const nome = button.getAttribute('data-nome');
+          const descricao = button.getAttribute('data-descricao');
+          document.getElementById('infoLabel').textContent = nome;
+          document.getElementById('infoDescricao').textContent = descricao;
+        });
+
+        const imageModal = document.getElementById('imageModal');
+        imageModal.addEventListener('show.bs.modal', function (event) {
+          const img = event.relatedTarget;
+          const src = img.getAttribute('data-image');
+          const alt = img.getAttribute('alt');
+          const modalImg = imageModal.querySelector('#modalImage');
+          modalImg.src = src;
+          modalImg.alt = alt;
+        });
       });
-    });
-  </script>
+    </script>
   <script src="<?= base_url('assets/layout.js'); ?>"></script>
 </body>
 </html>
