@@ -49,6 +49,12 @@
     </div>
   </div>
 
+  <div id="progressContainer" class="d-none position-fixed top-50 start-50 translate-middle w-50 text-center">
+    <div class="progress">
+      <div id="progressBar" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%">0%</div>
+    </div>
+  </div>
+
   <!-- Alertas -->
   <div id="alert-error" class="alert alert-danger alert-fixed" role="alert" style="display:none;">
     Ocorreu um erro ao cadastrar o cliente.
@@ -74,32 +80,62 @@
     <script>
     document.addEventListener('DOMContentLoaded', function() {
       const form = document.getElementById('clienteForm');
+      const progressContainer = document.getElementById('progressContainer');
+      const progressBar = document.getElementById('progressBar');
+
       form.addEventListener('submit', function(event) {
         event.preventDefault();
         const formData = new FormData(form);
-        fetch('<?= site_url('clientes/salvar'); ?>', {
-          method: 'POST',
-          body: formData
-        })
-        .then(response => {
-          if (!response.ok) throw new Error();
-          return response.json();
-        })
-        .then(() => {
-          const successModal = new bootstrap.Modal(document.getElementById('successModal'));
-          successModal.show();
-          setTimeout(() => {
-            successModal.hide();
-            window.location.href = '<?= site_url('clientes/lista'); ?>';
-          }, 2000);
-        })
-        .catch(() => {
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', '<?= site_url('clientes/salvar'); ?>');
+
+        xhr.upload.addEventListener('progress', function(e) {
+          if (e.lengthComputable) {
+            const percent = Math.round((e.loaded / e.total) * 100);
+            progressBar.style.width = percent + '%';
+            progressBar.textContent = percent + '%';
+          }
+        });
+
+        xhr.onload = function() {
+          progressContainer.classList.add('d-none');
+          progressBar.style.width = '0%';
+          progressBar.textContent = '0%';
+          if (xhr.status >= 200 && xhr.status < 300) {
+            try {
+              const data = JSON.parse(xhr.responseText);
+              if (data.status === 'success') {
+                const successModal = new bootstrap.Modal(document.getElementById('successModal'));
+                successModal.show();
+                setTimeout(() => {
+                  successModal.hide();
+                  window.location.href = '<?= site_url('clientes/lista'); ?>';
+                }, 2000);
+                form.reset();
+                return;
+              }
+            } catch (e) {}
+          }
+          showError();
+        };
+
+        xhr.onerror = function() {
+          progressContainer.classList.add('d-none');
+          progressBar.style.width = '0%';
+          progressBar.textContent = '0%';
+          showError();
+        };
+
+        function showError() {
           const alertError = document.getElementById('alert-error');
           alertError.style.display = 'block';
           setTimeout(() => {
             alertError.style.display = 'none';
           }, 3000);
-        });
+        }
+
+        progressContainer.classList.remove('d-none');
+        xhr.send(formData);
       });
     });
   </script>
