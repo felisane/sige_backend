@@ -77,30 +77,14 @@
             </tr>
           </thead>
           <tbody>
+            <?php foreach ($vendas as $venda): ?>
             <tr>
-              <td>01/08/2025</td>
-              <td>Venda de Produto X</td>
+              <td><?= date('d/m/Y', strtotime($venda->data)); ?></td>
+              <td><?= htmlspecialchars($venda->produto, ENT_QUOTES, 'UTF-8'); ?></td>
               <td><span class="badge bg-success">Entrada</span></td>
-              <td>15000</td>
+              <td><?= $venda->valor; ?></td>
             </tr>
-            <tr>
-              <td>02/08/2025</td>
-              <td>Pagamento de Fornecedor Y</td>
-              <td><span class="badge bg-danger">Saída</span></td>
-              <td>5000</td>
-            </tr>
-            <tr>
-              <td>03/08/2025</td>
-              <td>Venda de Serviço Z</td>
-              <td><span class="badge bg-success">Entrada</span></td>
-              <td>8000</td>
-            </tr>
-            <tr>
-              <td>04/08/2025</td>
-              <td>Nova Venda de Produto A</td>
-              <td><span class="badge bg-success">Entrada</span></td>
-              <td>12000</td>
-            </tr>
+            <?php endforeach; ?>
           </tbody>
         </table>
       </div>
@@ -133,24 +117,6 @@
         });
 
 
-      function adicionarDadosFicticios() {
-        const ano = 2025;
-        for (let mes = 0; mes < 12; mes++) {
-          const entradasMes = mes === 0 ? 9 : 8;
-          for (let i = 0; i < entradasMes; i++) {
-            const dia = (i % 28) + 1;
-            const data = `${String(dia).padStart(2, '0')}/${String(mes + 1).padStart(2, '0')}/${ano}`;
-            const entrada = Math.random() < 0.5;
-            const descricao = entrada ? `Venda ${mes + 1}-${i + 1}` : `Despesa ${mes + 1}-${i + 1}`;
-            const valor = Math.floor(Math.random() * 19000) + 1000;
-            const tipoHtml = `<span class="badge ${entrada ? 'bg-success' : 'bg-danger'}">${entrada ? 'Entrada' : 'Saída'}</span>`;
-            tabela.row.add([data, descricao, tipoHtml, valor]);
-          }
-        }
-        tabela.draw();
-      }
-
-      adicionarDadosFicticios();
       function calcularTotais() {
         let entradas = 0, saidas = 0;
         tabela.rows({ filter: 'applied' }).every(function () {
