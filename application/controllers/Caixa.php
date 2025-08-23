@@ -33,6 +33,7 @@ class Caixa extends CI_Controller {
 
     public function fluxo()
     {
-        $this->load->view('fluxo_caixa');
+        $data['vendas'] = $this->Venda_model->todas();
+        $this->load->view('fluxo_caixa', $data);
     }
 }
