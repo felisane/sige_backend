@@ -15,6 +15,15 @@ class Produtos extends CI_Controller {
         $this->load->view('lista_produtos', $data);
     }
 
+    public function todos()
+    {
+        $produtos = $this->Produto_model->todos();
+
+        $this->output
+            ->set_content_type('application/json')
+            ->set_output(json_encode($produtos));
+    }
+
     public function adicionar()
     {
         $data['categorias'] = $this->Categoria_model->todas();
