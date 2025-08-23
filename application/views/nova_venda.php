@@ -73,26 +73,34 @@
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
   <script src="<?= base_url('assets/layout.js'); ?>"></script>
-  <script src="<?= base_url('assets/db.js'); ?>"></script>
   <script>
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', async function() {
       const clienteList = document.getElementById('clientesList');
-      clientesDB.forEach(c => {
-        const option = document.createElement('option');
-        option.value = c.nome;
-        option.dataset.id = c.id;
-        clienteList.appendChild(option);
-      });
+      try {
+        const clientesRes = await fetch('<?= site_url('clientes/todos'); ?>');
+        const clientes = await clientesRes.json();
+        clientes.forEach(c => {
+          const option = document.createElement('option');
+          option.value = c.nome;
+          option.dataset.id = c.id;
+          clienteList.appendChild(option);
+        });
+      } catch (e) {}
 
       const produtoInput = document.getElementById('produtoVenda');
       const produtoList = document.getElementById('produtosList');
-      produtosDB.forEach(p => {
-        const option = document.createElement('option');
-        option.value = p.nome;
-        option.dataset.id = p.id;
-        option.dataset.preco = p.preco;
-        produtoList.appendChild(option);
-      });
+      let produtosDB = [];
+      try {
+        const produtosRes = await fetch('<?= site_url('produtos/todos'); ?>');
+        produtosDB = await produtosRes.json();
+        produtosDB.forEach(p => {
+          const option = document.createElement('option');
+          option.value = p.nome;
+          option.dataset.id = p.id;
+          option.dataset.preco = p.preco;
+          produtoList.appendChild(option);
+        });
+      } catch (e) {}
 
       const valorInput = document.getElementById('valorVenda');
       const descDiv = document.getElementById('servicoDescricaoDiv');

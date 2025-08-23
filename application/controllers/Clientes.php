@@ -11,6 +11,16 @@ class Clientes extends CI_Controller {
         $this->load->view('lista_clientes', ['dataVar' => ['clientes' => $clientes]]);
     }
 
+    public function todos()
+    {
+        $this->load->model('Cliente_model');
+        $clientes = $this->Cliente_model->get_all();
+
+        $this->output
+            ->set_content_type('application/json')
+            ->set_output(json_encode($clientes));
+    }
+
     public function cadastrar()
     {
         $this->load->view('cadastrar');
