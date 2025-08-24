@@ -12,7 +12,8 @@
     <div class="d-flex align-items-center">
       <!-- User profile icon and greeting -->
       <i class="bi bi-person-circle fs-3 me-2 text-primary"></i>
-      <span>Olá, Administrador</span>
+      <span>Olá, <?= html_escape($this->session->userdata('username')); ?></span>
+      <a href="<?= site_url('auth/logout'); ?>" class="btn btn-sm btn-outline-secondary ms-3">Sair</a>
     </div>
   </div>
 </nav>
