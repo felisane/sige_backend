@@ -39,7 +39,7 @@
                 <td>
                     <button class="btn btn-sm btn-primary me-1" onclick="window.location.href='<?= site_url('clientes/editar/'.$c['id']); ?>'"><i class="bi bi-pencil"></i></button>
                     <button class="btn btn-sm btn-danger me-1" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal" data-id="<?= $c['id']; ?>"><i class="bi bi-trash"></i></button>
-                    <button class="btn btn-sm btn-secondary" data-bs-toggle="modal" data-bs-target="#historyModal"><i class="bi bi-clock-history"></i></button>
+                    <button class="btn btn-sm btn-secondary" data-bs-toggle="modal" data-bs-target="#historyModal" data-id="<?= $c['id']; ?>"><i class="bi bi-clock-history"></i></button>
                 </td>
               </tr>
             <?php endforeach; ?>
@@ -79,10 +79,7 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          <ul class="list-group">
-            <li class="list-group-item">01/01/2024 - Cliente cadastrado.</li>
-            <li class="list-group-item">15/01/2024 - Dados atualizados.</li>
-          </ul>
+          <ul class="list-group" id="historyList"></ul>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
@@ -130,6 +127,32 @@
           },
           error: function () {
             alert('Erro ao apagar cliente');
+          }
+        });
+      });
+
+      $('#historyModal').on('show.bs.modal', function (event) {
+        const button = $(event.relatedTarget);
+        const cliente = button.data('id');
+        const list = $('#historyList');
+        list.html('<li class="list-group-item">Carregando...</li>');
+
+        $.ajax({
+          url: '<?= site_url('clientes/historico'); ?>/' + cliente,
+          dataType: 'json',
+          success: function (data) {
+            list.empty();
+            if (!data || data.length === 0) {
+              list.append('<li class="list-group-item">Nenhum serviço encontrado.</li>');
+            } else {
+              data.forEach(function (item) {
+                const desc = item.descricao ? item.descricao : item.produto;
+                list.append('<li class="list-group-item">' + item.data + ' - ' + desc + '</li>');
+              });
+            }
+          },
+          error: function () {
+            list.html('<li class="list-group-item text-danger">Erro ao carregar histórico.</li>');
           }
         });
       });
