@@ -8,7 +8,17 @@ class Venda_model extends CI_Model {
     }
 
     public function inserir($data) {
-        return $this->db->insert('vendas', $data);
+        $this->db->trans_start();
+
+        $this->db->insert('vendas', $data);
+
+        $quantidade = (int) $data['quantidade'];
+        $this->db->set('estoque', 'estoque - ' . $quantidade, false);
+        $this->db->where('nome', $data['produto']);
+        $this->db->update('produtos');
+
+        $this->db->trans_complete();
+        return $this->db->trans_status();
     }
 
     public function todas() {
