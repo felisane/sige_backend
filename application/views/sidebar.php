@@ -42,6 +42,7 @@
       <nav class="nav nav-pills flex-column">
         <a href="<?= site_url('caixa/nova_venda'); ?>" class="nav-link text-white">Nova Venda</a>
         <a href="<?= site_url('caixa/fluxo'); ?>" class="nav-link text-white">Fluxo de Caixa</a>
+        <a href="<?= site_url('caixa/saidas'); ?>" class="nav-link text-white">Saídas</a>
       </nav>
     </div>
     <a class="nav-link text-white d-flex justify-content-between align-items-center" data-bs-toggle="collapse" href="#submenuRelatorios" role="button" aria-expanded="false" aria-controls="submenuRelatorios">

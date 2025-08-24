@@ -87,6 +87,15 @@
               <td data-order="<?= $venda->valor; ?>"><?= number_format($venda->valor, 2, ',', '.'); ?></td>
             </tr>
             <?php endforeach; ?>
+            <?php foreach ($saidas as $saida): ?>
+            <tr>
+              <td><?= date('d/m/Y', strtotime($saida->data)); ?></td>
+              <td><?= htmlspecialchars($saida->descricao, ENT_QUOTES, 'UTF-8'); ?></td>
+              <td>-</td>
+              <td><span class="badge bg-danger">Saída</span></td>
+              <td data-order="<?= $saida->valor; ?>"><?= number_format($saida->valor, 2, ',', '.'); ?></td>
+            </tr>
+            <?php endforeach; ?>
           </tbody>
         </table>
       </div>
