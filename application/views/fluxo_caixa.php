@@ -23,9 +23,9 @@
       <div class="card mb-4">
         <div class="card-body">
           <h5 class="card-title">Saldo Atual</h5>
-          <p>Entradas: <span id="totalEntradas">Kz 0</span></p>
-          <p>Saídas: <span id="totalSaidas">Kz 0</span></p>
-          <p class="fw-bold">Saldo Atual: <span id="saldoAtual">Kz 0</span></p>
+          <p>Entradas: <span id="totalEntradas">Kz 0,00</span></p>
+          <p>Saídas: <span id="totalSaidas">Kz 0,00</span></p>
+          <p class="fw-bold">Saldo Atual: <span id="saldoAtual">Kz 0,00</span></p>
         </div>
       </div>
 
@@ -72,6 +72,7 @@
             <tr>
               <th>Data</th>
               <th>Descrição</th>
+              <th>Quantidade</th>
               <th>Tipo</th>
               <th>Valor (Kz)</th>
             </tr>
@@ -81,8 +82,9 @@
             <tr>
               <td><?= date('d/m/Y', strtotime($venda->data)); ?></td>
               <td><?= htmlspecialchars($venda->produto, ENT_QUOTES, 'UTF-8'); ?></td>
+              <td><?= $venda->quantidade; ?></td>
               <td><span class="badge bg-success">Entrada</span></td>
-              <td><?= $venda->valor; ?></td>
+              <td data-order="<?= $venda->valor; ?>"><?= number_format($venda->valor, 2, ',', '.'); ?></td>
             </tr>
             <?php endforeach; ?>
           </tbody>
@@ -121,14 +123,14 @@
         let entradas = 0, saidas = 0;
         tabela.rows({ filter: 'applied' }).every(function () {
           const data = this.data();
-          const tipo = $('<div>').html(data[2]).text().trim();
-          const valor = parseFloat(data[3]);
+          const tipo = $('<div>').html(data[3]).text().trim();
+          const valor = parseFloat($(this.node()).find('td').eq(4).data('order'));
           if (tipo === 'Entrada') entradas += valor;
           else if (tipo === 'Saída') saidas += valor;
         });
-        $('#totalEntradas').text(`Kz ${entradas.toLocaleString()}`);
-        $('#totalSaidas').text(`Kz ${saidas.toLocaleString()}`);
-        $('#saldoAtual').text(`Kz ${(entradas - saidas).toLocaleString()}`);
+        $('#totalEntradas').text(`Kz ${entradas.toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`);
+        $('#totalSaidas').text(`Kz ${saidas.toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`);
+        $('#saldoAtual').text(`Kz ${(entradas - saidas).toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`);
       }
 
       function weekToDate(year, week) {
@@ -215,13 +217,13 @@
         let entradas = 0, saidas = 0;
         tabela.rows().every(function () {
           const data = this.data();
-          const tipo = $('<div>').html(data[2]).text().trim();
-          const valor = parseFloat(data[3]);
+          const tipoMov = $('<div>').html(data[3]).text().trim();
+          const valor = parseFloat($(this.node()).find('td').eq(4).data('order'));
           const [d, m, y] = data[0].split('/').map(Number);
           const rowDate = new Date(y, m - 1, d);
           if (rowDate >= start && rowDate <= end) {
-            if (tipo === 'Entrada') entradas += valor;
-            else if (tipo === 'Saída') saidas += valor;
+            if (tipoMov === 'Entrada') entradas += valor;
+            else if (tipoMov === 'Saída') saidas += valor;
           }
         });
         return entradas - saidas;
