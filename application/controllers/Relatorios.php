@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Relatorios extends CI_Controller {
+class Relatorios extends MY_Controller {
     public function vendas()
     {
         $this->load->model('Venda_model');
