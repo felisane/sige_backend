@@ -9,9 +9,26 @@
   <link href="<?= base_url('assets/style.css'); ?>" rel="stylesheet">
   <style>
     .toast { position: fixed; top: 20px; right: 20px; z-index: 9999; }
+    #loadingSpinner {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255, 255, 255, 0.7);
+      z-index: 1050;
+    }
   </style>
 </head>
 <body class="d-flex min-vh-100 bg-light text-dark">
+<div id="loadingSpinner" class="d-none">
+  <div class="spinner-border text-primary" role="status">
+    <span class="visually-hidden">Carregando...</span>
+  </div>
+</div>
 <?php $this->load->view('navbar'); ?>
 <?php $this->load->view('sidebar'); ?>
 <div class="content">
@@ -74,7 +91,17 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
   <script src="<?= base_url('assets/layout.js'); ?>"></script>
   <script>
+    function toggleLoading(show) {
+      const spinner = document.getElementById('loadingSpinner');
+      if (show) {
+        spinner.classList.remove('d-none');
+      } else {
+        spinner.classList.add('d-none');
+      }
+    }
+
     document.addEventListener('DOMContentLoaded', async function() {
+      toggleLoading(true);
       const clienteList = document.getElementById('clientesList');
       try {
         const clientesRes = await fetch('<?= site_url('clientes/todos'); ?>');
@@ -120,9 +147,12 @@
       });
 
       const form = document.getElementById('vendaForm');
+      const submitBtn = form.querySelector('button[type="submit"]');
       form.addEventListener('submit', function(e) {
         e.preventDefault();
         const formData = new FormData(form);
+        submitBtn.disabled = true;
+        toggleLoading(true);
         fetch('<?= site_url('caixa/registrar_venda'); ?>', {
           method: 'POST',
           body: formData
@@ -140,8 +170,13 @@
             showToast('toast-error');
           }
         })
-        .catch(() => showToast('toast-error'));
+        .catch(() => showToast('toast-error'))
+        .finally(() => {
+          submitBtn.disabled = false;
+          toggleLoading(false);
+        });
       });
+      toggleLoading(false);
     });
 
     function showToast(id) {
