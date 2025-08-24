@@ -131,7 +131,9 @@
         .then(data => {
           if (data.status === 'success') {
             showToast('toast-success');
-            form.reset();
+            setTimeout(() => {
+              window.location.href = "<?= site_url('produtos/lista'); ?>";
+            }, 3000);
             descDiv.classList.add('d-none');
             descInput.required = false;
           } else {
