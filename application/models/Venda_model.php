@@ -24,4 +24,12 @@ class Venda_model extends CI_Model {
     public function todas() {
         return $this->db->order_by('data', 'DESC')->get('vendas')->result();
     }
+
+    public function por_cliente($cliente)
+    {
+        return $this->db
+            ->order_by('data', 'DESC')
+            ->get_where('vendas', ['cliente' => $cliente])
+            ->result_array();
+    }
 }

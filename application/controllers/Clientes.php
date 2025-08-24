@@ -77,4 +77,21 @@ class Clientes extends CI_Controller {
             ->set_status_header($success ? 200 : 500)
             ->set_output(json_encode(['status' => $success ? 'success' : 'error']));
     }
+
+    public function historico($id)
+    {
+        $this->load->model('Cliente_model');
+        $this->load->model('Venda_model');
+
+        $cliente = $this->Cliente_model->get($id);
+        if (!$cliente) {
+            show_404();
+        }
+
+        $historico = $this->Venda_model->por_cliente($cliente['nome']);
+
+        $this->output
+            ->set_content_type('application/json')
+            ->set_output(json_encode($historico));
+    }
 }
