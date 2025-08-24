@@ -17,14 +17,13 @@ class Auth extends CI_Controller {
     {
         $username = $this->input->post('username');
         $password = $this->input->post('password');
-        $level    = $this->input->post('level');
 
         foreach ($this->users as $user) {
-            if ($user['username'] === $username && $user['password'] === $password && $user['level'] === $level) {
+            if ($user['username'] === $username && $user['password'] === $password) {
                 $this->session->set_userdata([
                     'logged_in' => TRUE,
                     'username'  => $username,
-                    'level'     => $level,
+                    'level'     => $user['level'],
                 ]);
                 redirect('home');
                 return;
