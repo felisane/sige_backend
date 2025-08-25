@@ -19,7 +19,7 @@
       <div class="card shadow-sm">
         <div class="card-body">
           <div class="table-responsive">
-          <table class="table table-bordered table-striped" id="tabelaClientes">
+          <table class="table table-bordered table-striped datatable" id="tabelaClientes">
             <thead class="table-light">
                 <tr>
                 <th>#</th>
@@ -100,17 +100,10 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+  <script src="<?= base_url('assets/tables.js'); ?>"></script>
   <script>
     $(document).ready(function () {
-      if (!$.fn.DataTable.isDataTable('#tabelaClientes')) {
-        $('#tabelaClientes').DataTable({
-          dom: "<'d-flex justify-content-between align-items-center flex-wrap mb-3'<'d-flex align-items-center gap-2'lf>B>rtip",
-          buttons: ['copy', 'csv', 'excel', 'pdf', 'print'],
-          language: {
-            url: 'https://cdn.datatables.net/plug-ins/1.13.6/i18n/pt-PT.json'
-          }
-        });
-      }
+      const tabela = $('#tabelaClientes').DataTable();
 
       let clienteId;
       $('#confirmDeleteModal').on('show.bs.modal', function (event) {

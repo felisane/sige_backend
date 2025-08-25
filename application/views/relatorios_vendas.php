@@ -32,7 +32,7 @@
       </div>
 
       <div class="table-responsive">
-        <table class="table table-striped table-hover align-middle" id="tabelaVendas">
+        <table class="table table-striped table-hover align-middle datatable" id="tabelaVendas">
           <thead class="table-light">
             <tr>
               <th>Produto</th>
@@ -71,6 +71,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+  <script src="<?= base_url('assets/tables.js'); ?>"></script>
   <script>
     $(document).ready(function () {
       const filtro = $('#filtroVendas');
@@ -117,13 +118,7 @@
         return dataVenda >= inicio && dataVenda < fim;
       });
 
-      const tabela = $('#tabelaVendas').DataTable({
-        dom: "<'d-flex justify-content-between align-items-center flex-wrap mb-3'<'d-flex align-items-center gap-2'lf>B>rtip",
-        buttons: ['copy', 'csv', 'excel', 'pdf', 'print'],
-        language: {
-          url: 'https://cdn.datatables.net/plug-ins/1.13.6/i18n/pt-PT.json'
-        }
-      });
+      const tabela = $('#tabelaVendas').DataTable();
 
       filtro.on('change', function () {
         tabela.draw();

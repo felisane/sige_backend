@@ -6,7 +6,9 @@
   <title>Painel de Controle | SIGE</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
-  <link href="<?= base_url('assets/style.css'); ?>" rel="stylesheet">  
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
+  <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.bootstrap5.min.css">
+  <link href="<?= base_url('assets/style.css'); ?>" rel="stylesheet">
 </head>
 <body class="d-flex min-vh-100 bg-light text-dark">
 <?php $this->load->view('navbar'); ?>
@@ -58,7 +60,7 @@
 
   <div class="table-responsive mt-4">
     <h5 class="mb-3">Últimos Clientes</h5>
-    <table class="table table-striped table-hover align-middle">
+    <table class="table table-bordered table-striped table-hover align-middle datatable">
       <thead class="table-light">
           <tr>
             <th>#</th>
@@ -88,6 +90,17 @@
   </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.1/js/dataTables.buttons.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.bootstrap5.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.print.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+<script src="<?= base_url('assets/tables.js'); ?>"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="<?= base_url('assets/script.js'); ?>"></script>
 <script src="<?= base_url('assets/layout.js'); ?>"></script>

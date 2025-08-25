@@ -67,7 +67,7 @@
       </div>
 
       <div class="table-responsive">
-        <table class="table table-striped table-hover align-middle" id="tabelaFluxo">
+        <table class="table table-striped table-hover align-middle datatable" id="tabelaFluxo">
           <thead class="table-light">
             <tr>
               <th>Data</th>
@@ -114,18 +114,13 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="<?= base_url('assets/tables.js'); ?>"></script>
   <script>
     $(document).ready(function () {
-      const tabela = $('#tabelaFluxo').DataTable({
-        dom: 'Brtip',
-        buttons: ['copy', 'csv', 'excel', 'pdf', 'print'],
-        language: {
-          url: 'https://cdn.datatables.net/plug-ins/1.13.6/i18n/pt-PT.json'
-        }
+      const tabela = $('#tabelaFluxo').DataTable();
+      $('#tabelaFluxoSearch').on('keyup', function () {
+        tabela.search(this.value).draw();
       });
-        $('#tabelaFluxoSearch').on('keyup', function () {
-          tabela.search(this.value).draw();
-        });
 
 
       function calcularTotais() {
