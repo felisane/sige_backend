@@ -62,7 +62,6 @@
             <span id="comparativoInputs"></span>
           </div>
           <p id="resultadoComparativo" class="fw-bold"></p>
-          <canvas id="fluxoChart" height="100"></canvas>
         </div>
       </div>
 
@@ -117,7 +116,6 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="<?= base_url('assets/tables.js'); ?>"></script>
   <script>
     $(document).ready(function () {
@@ -197,9 +195,6 @@
         $('#subFiltro').toggleClass('d-none', periodo === 'all');
       }
 
-      const ctx = document.getElementById('fluxoChart').getContext('2d');
-      let comparativoChart;
-
       function mostrarInputsComparativo(tipo) {
         let html = '';
         if (tipo === 'day') html = '<input type="date" id="compInput1" class="form-control d-inline w-auto me-2" /> <input type="date" id="compInput2" class="form-control d-inline w-auto" />';
@@ -237,18 +232,6 @@
         return entradas - saidas;
       }
 
-      function formatLabel(tipo, valor) {
-        if (tipo === 'day') return new Date(valor).toLocaleDateString('pt-PT');
-        if (tipo === 'week') {
-          const [year, wk] = valor.split('-W');
-          return `Sem ${wk}/${year}`;
-        }
-        if (tipo === 'month') {
-          const [year, month] = valor.split('-');
-          return `${month}/${year}`;
-        }
-      }
-
       function atualizarGraficoComparativo() {
         const tipo = $('#tipoComparativo').val();
         const v1 = $('#compInput1').val();
@@ -258,12 +241,6 @@
         const total2 = obterSaldoPeriodo(tipo, v2);
         const perc = total1 !== 0 ? ((total2 - total1) / total1) * 100 : 0;
         $('#resultadoComparativo').text(`Desempenho: ${perc.toFixed(2)}%`);
-        const dataChart = {
-          labels: [formatLabel(tipo, v1), formatLabel(tipo, v2)],
-          datasets: [{ label: 'Saldo Líquido', data: [total1, total2], backgroundColor: ['rgba(75, 192, 192, 0.5)', 'rgba(255, 99, 132, 0.5)'] }]
-        };
-        if (comparativoChart) comparativoChart.destroy();
-        comparativoChart = new Chart(ctx, { type: 'bar', data: dataChart, options: { responsive: true } });
       }
 
       $('#tipoComparativo').on('change', function () {
