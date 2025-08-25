@@ -90,6 +90,8 @@
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
   <script src="<?= base_url('assets/layout.js'); ?>"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
   <script>
     function toggleLoading(show) {
       const spinner = document.getElementById('loadingSpinner');
@@ -160,6 +162,11 @@
         .then(response => response.json())
         .then(data => {
           if (data.status === 'success') {
+            const vendaInfo = Object.fromEntries(formData.entries());
+            vendaInfo.id = data.id;
+            if (confirm('Deseja imprimir a factura em PDF?')) {
+              gerarPdf(vendaInfo);
+            }
             showToast('toast-success');
             setTimeout(() => {
               window.location.href = "<?= site_url('produtos/lista'); ?>";
@@ -183,6 +190,30 @@
       const toast = document.getElementById(id);
       toast.style.display = 'block';
       setTimeout(() => { toast.style.display = 'none'; }, 3000);
+    }
+
+    function gerarPdf(venda) {
+      const total = Number(venda.quantidade) * Number(venda.valor);
+      const content = [
+        { text: 'Factura', style: 'header' },
+        { text: `Nº: ${venda.id}` },
+        { text: `Data: ${venda.data}` },
+        { text: `Cliente: ${venda.cliente}` },
+        { text: `Produto/Serviço: ${venda.produto}` }
+      ];
+      if (venda.descricao) {
+        content.push({ text: `Descrição: ${venda.descricao}` });
+      }
+      content.push({ text: `Quantidade: ${venda.quantidade}` });
+      content.push({ text: `Valor: Kz ${venda.valor}` });
+      content.push({ text: `Total: Kz ${total}` });
+      const docDefinition = {
+        content: content,
+        styles: {
+          header: { fontSize: 18, bold: true, marginBottom: 10 }
+        }
+      };
+      pdfMake.createPdf(docDefinition).open();
     }
 
     function hideToast(id) {
