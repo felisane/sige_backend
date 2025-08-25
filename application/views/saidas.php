@@ -104,6 +104,12 @@
         }
       });
 
+      tabela.rows().nodes().each((rowNode) => {
+        const cell = $(rowNode).find('td').eq(2);
+        const orderValue = parseFloat(cell.text().replace(/\./g, '').replace(',', '.'));
+        cell.attr('data-order', orderValue);
+      });
+
       const form = document.getElementById('saidaForm');
       form.addEventListener('submit', function (e) {
         e.preventDefault();
@@ -126,6 +132,11 @@
             ]).draw();
             const node = tabela.row(':last').node();
             $(node).find('td').eq(2).attr('data-order', valor);
+            tabela.rows().nodes().each((rowNode) => {
+              const cell = $(rowNode).find('td').eq(2);
+              const orderValue = parseFloat(cell.text().replace(/\./g, '').replace(',', '.'));
+              cell.attr('data-order', orderValue);
+            });
             form.reset();
           } else {
             showToast('toast-error');
