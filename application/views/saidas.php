@@ -118,14 +118,11 @@
             showToast('toast-success');
             const dataFormatada = new Date(formData.get('data')).toLocaleDateString('pt-PT');
             const valor = parseFloat(formData.get('valor'));
+            const valorFormatado = valor.toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2});
             tabela.row.add([
               dataFormatada,
               formData.get('descricao'),
-              {
-                display: valor.toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2}),
-                sort: valor,
-                filter: valor.toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2})
-              }
+              `<span data-order="${valor}">${valorFormatado}</span>`
             ]).draw();
             form.reset();
           } else {
