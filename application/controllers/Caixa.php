@@ -25,8 +25,10 @@ class Caixa extends MY_Controller {
             'valor'      => $this->input->post('valor')
         ];
 
-        if ($this->Venda_model->inserir($venda)) {
-            echo json_encode(['status' => 'success']);
+        $id = $this->Venda_model->inserir($venda);
+
+        if ($id) {
+            echo json_encode(['status' => 'success', 'id' => $id, 'venda' => $venda]);
         } else {
             echo json_encode(['status' => 'error']);
         }

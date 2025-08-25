@@ -11,6 +11,7 @@ class Venda_model extends CI_Model {
         $this->db->trans_start();
 
         $this->db->insert('vendas', $data);
+        $venda_id = $this->db->insert_id();
 
         $quantidade = (int) $data['quantidade'];
         $this->db->set('estoque', 'estoque - ' . $quantidade, false);
@@ -18,7 +19,7 @@ class Venda_model extends CI_Model {
         $this->db->update('produtos');
 
         $this->db->trans_complete();
-        return $this->db->trans_status();
+        return $this->db->trans_status() ? $venda_id : false;
     }
 
     public function todas() {
