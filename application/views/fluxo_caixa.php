@@ -66,38 +66,42 @@
         </div>
       </div>
 
-      <div class="table-responsive">
-        <table class="table table-striped table-hover align-middle datatable" id="tabelaFluxo">
-          <thead class="table-light">
-            <tr>
-              <th>Data</th>
-              <th>Descrição</th>
-              <th>Quantidade</th>
-              <th>Tipo</th>
-              <th>Valor (Kz)</th>
-            </tr>
-          </thead>
-          <tbody>
-            <?php foreach ($vendas as $venda): ?>
-            <tr>
-              <td><?= date('d/m/Y', strtotime($venda->data)); ?></td>
-              <td><?= htmlspecialchars($venda->produto, ENT_QUOTES, 'UTF-8'); ?></td>
-              <td><?= $venda->quantidade; ?></td>
-              <td><span class="badge bg-success">Entrada</span></td>
-              <td data-order="<?= $venda->valor; ?>"><?= number_format($venda->valor, 2, ',', '.'); ?></td>
-            </tr>
-            <?php endforeach; ?>
-            <?php foreach ($saidas as $saida): ?>
-            <tr>
-              <td><?= date('d/m/Y', strtotime($saida->data)); ?></td>
-              <td><?= htmlspecialchars($saida->descricao, ENT_QUOTES, 'UTF-8'); ?></td>
-              <td>-</td>
-              <td><span class="badge bg-danger">Saída</span></td>
-              <td data-order="<?= $saida->valor; ?>"><?= number_format($saida->valor, 2, ',', '.'); ?></td>
-            </tr>
-            <?php endforeach; ?>
-          </tbody>
-        </table>
+      <div class="card mb-4">
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table table-bordered table-striped table-hover align-middle datatable" id="tabelaFluxo">
+              <thead class="table-light">
+                <tr>
+                  <th>Data</th>
+                  <th>Descrição</th>
+                  <th>Quantidade</th>
+                  <th>Tipo</th>
+                  <th>Valor (Kz)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <?php foreach ($vendas as $venda): ?>
+                <tr>
+                  <td><?= date('d/m/Y', strtotime($venda->data)); ?></td>
+                  <td><?= htmlspecialchars($venda->produto, ENT_QUOTES, 'UTF-8'); ?></td>
+                  <td><?= $venda->quantidade; ?></td>
+                  <td><span class="badge bg-success">Entrada</span></td>
+                  <td data-order="<?= $venda->valor; ?>"><?= number_format($venda->valor, 2, ',', '.'); ?></td>
+                </tr>
+                <?php endforeach; ?>
+                <?php foreach ($saidas as $saida): ?>
+                <tr>
+                  <td><?= date('d/m/Y', strtotime($saida->data)); ?></td>
+                  <td><?= htmlspecialchars($saida->descricao, ENT_QUOTES, 'UTF-8'); ?></td>
+                  <td>-</td>
+                  <td><span class="badge bg-danger">Saída</span></td>
+                  <td data-order="<?= $saida->valor; ?>"><?= number_format($saida->valor, 2, ',', '.'); ?></td>
+                </tr>
+                <?php endforeach; ?>
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
     </div>
   </div>
