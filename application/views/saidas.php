@@ -117,10 +117,15 @@
           if (data.status === 'success') {
             showToast('toast-success');
             const dataFormatada = new Date(formData.get('data')).toLocaleDateString('pt-PT');
+            const valor = parseFloat(formData.get('valor'));
             tabela.row.add([
               dataFormatada,
               formData.get('descricao'),
-              parseFloat(formData.get('valor')).toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2})
+              {
+                display: valor.toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2}),
+                sort: valor,
+                filter: valor.toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2})
+              }
             ]).draw();
             form.reset();
           } else {
