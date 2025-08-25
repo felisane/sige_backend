@@ -118,15 +118,13 @@
             showToast('toast-success');
             const dataFormatada = new Date(formData.get('data')).toLocaleDateString('pt-PT');
             const valor = parseFloat(formData.get('valor'));
-            tabela.row.add([
+            const valorFormatado = valor.toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+            const novaLinha = tabela.row.add([
               dataFormatada,
               formData.get('descricao'),
-              {
-                display: valor.toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2}),
-                sort: valor,
-                filter: valor.toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2})
-              }
-            ]).draw();
+              valorFormatado
+            ]).draw().node();
+            $(novaLinha).find('td:eq(2)').attr('data-order', valor);
             form.reset();
           } else {
             showToast('toast-error');
