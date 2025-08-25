@@ -122,8 +122,10 @@
             tabela.row.add([
               dataFormatada,
               formData.get('descricao'),
-              `<span data-order="${valor}">${valorFormatado}</span>`
+              valorFormatado
             ]).draw();
+            const novaLinha = tabela.row(':last').node();
+            novaLinha.querySelector('td:nth-child(3)')?.setAttribute('data-order', valor);
             form.reset();
           } else {
             showToast('toast-error');
