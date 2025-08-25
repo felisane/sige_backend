@@ -124,8 +124,8 @@
               formData.get('descricao'),
               valorFormatado
             ]).draw();
-            const novaLinha = tabela.row(':last').node();
-            novaLinha.querySelector('td:nth-child(3)')?.setAttribute('data-order', valor);
+            const node = tabela.row(':last').node();
+            $(node).find('td').eq(2).attr('data-order', valor);
             form.reset();
           } else {
             showToast('toast-error');
