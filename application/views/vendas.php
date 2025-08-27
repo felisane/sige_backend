@@ -35,7 +35,7 @@
             data-id="<?= $v->id; ?>"
             data-data="<?= $v->data; ?>"
             data-cliente="<?= htmlspecialchars($v->cliente, ENT_QUOTES, 'UTF-8'); ?>"
-            data-produto="<?= htmlspecialchars($v->produto, ENT_QUOTES, 'UTF-8'); ?>"
+            data-produto="<?= htmlspecialchars($v->produto_nome ? $v->produto_nome : $v->produto, ENT_QUOTES, 'UTF-8'); ?>"
             data-descricao="<?= htmlspecialchars($v->descricao, ENT_QUOTES, 'UTF-8'); ?>"
             data-quantidade="<?= $v->quantidade; ?>"
             data-valor="<?= $v->valor; ?>"
@@ -43,7 +43,7 @@
             <td><?= $v->id; ?></td>
             <td><?= date('d/m/Y', strtotime($v->data)); ?></td>
             <td><?= $v->cliente; ?></td>
-            <td><?= $v->descricao ? $v->descricao : $v->produto; ?></td>
+            <td><?= $v->produto_nome ? $v->produto_nome : ($v->descricao ? $v->descricao : $v->produto); ?></td>
             <td><?= $v->quantidade; ?></td>
             <td><?= number_format($v->valor, 2, ',', '.'); ?></td>
             <td><button class="btn btn-sm btn-outline-primary imprimir"><i class="bi bi-printer"></i></button></td>
