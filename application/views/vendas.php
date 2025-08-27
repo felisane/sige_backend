@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Vendas | SIGE</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
+  <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.bootstrap5.min.css">
+  <link href="<?= base_url('assets/style.css'); ?>" rel="stylesheet">
+</head>
+<body class="d-flex min-vh-100 bg-light text-dark">
+<?php $this->load->view('navbar'); ?>
+<?php $this->load->view('sidebar'); ?>
+<div class="content">
+  <div class="container mt-5">
+    <h3>Vendas</h3>
+    <div class="table-responsive">
+      <table class="table table-bordered table-striped datatable" id="tabelaVendas">
+        <thead>
+          <tr>
+            <th>Nº</th>
+            <th>Data</th>
+            <th>Cliente</th>
+            <th>Produto/Serviço</th>
+            <th>Quantidade</th>
+            <th>Valor (Kz)</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          <?php foreach ($vendas as $v): ?>
+          <tr
+            data-id="<?= $v->id; ?>"
+            data-data="<?= $v->data; ?>"
+            data-cliente="<?= htmlspecialchars($v->cliente, ENT_QUOTES, 'UTF-8'); ?>"
+            data-produto="<?= htmlspecialchars($v->produto, ENT_QUOTES, 'UTF-8'); ?>"
+            data-descricao="<?= htmlspecialchars($v->descricao, ENT_QUOTES, 'UTF-8'); ?>"
+            data-quantidade="<?= $v->quantidade; ?>"
+            data-valor="<?= $v->valor; ?>"
+          >
+            <td><?= $v->id; ?></td>
+            <td><?= date('d/m/Y', strtotime($v->data)); ?></td>
+            <td><?= $v->cliente; ?></td>
+            <td><?= $v->descricao ? $v->descricao : $v->produto; ?></td>
+            <td><?= $v->quantidade; ?></td>
+            <td><?= number_format($v->valor, 2, ',', '.'); ?></td>
+            <td><button class="btn btn-sm btn-outline-primary imprimir"><i class="bi bi-printer"></i></button></td>
+          </tr>
+          <?php endforeach; ?>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.1/js/dataTables.buttons.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.bootstrap5.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.print.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+<script src="<?= base_url('assets/tables.js'); ?>"></script>
+<script src="<?= base_url('assets/layout.js'); ?>"></script>
+<script>
+  function gerarPdf(venda) {
+    const total = Number(venda.quantidade) * Number(venda.valor);
+    const docDefinition = {
+      content: [
+        {
+          columns: [
+            {
+              stack: [
+                { text: 'Delicias das Ribeirinho', bold: true },
+                { text: '0055 009 0252914701 85' },
+                { text: 'Luanda' },
+                { text: 'COQUEIRO' }
+              ]
+            },
+            { text: 'FATURA', style: 'invoiceTitle', alignment: 'right' }
+          ]
+        },
+        { text: '\n' },
+        {
+          columns: [
+            {
+              width: '*',
+              stack: [
+                { text: 'Faturar a', bold: true, margin: [0, 0, 0, 5] },
+                { text: venda.cliente }
+              ]
+            },
+            {
+              width: 'auto',
+              table: {
+                body: [
+                  [{ text: 'Número de fatura', bold: true }, `INV-${String(venda.id).padStart(4, '0')}`],
+                  [{ text: 'Data da fatura', bold: true }, venda.data],
+                  [{ text: 'Data de vencimento', bold: true }, venda.data]
+                ]
+              },
+              layout: 'noBorders'
+            }
+          ]
+        },
+        { text: '\n' },
+        {
+          table: {
+            widths: ['*', 'auto', 'auto', 'auto', 'auto'],
+            body: [
+              [
+                { text: 'Descrição', bold: true },
+                { text: 'Unidade', bold: true },
+                { text: 'Quantidade', bold: true },
+                { text: 'Taxa', bold: true },
+                { text: 'Montante', bold: true }
+              ],
+              [
+                venda.descricao ? venda.descricao : venda.produto,
+                'un',
+                venda.quantidade,
+                Number(venda.valor).toFixed(2),
+                total.toFixed(2)
+              ]
+            ]
+          }
+        },
+        {
+          columns: [
+            { text: '', width: '*' },
+            {
+              width: 'auto',
+              table: {
+                body: [
+                  [{ text: 'Subtotal', bold: true }, total.toFixed(2)],
+                  [{ text: 'Total', bold: true }, total.toFixed(2)]
+                ]
+              },
+              layout: 'noBorders'
+            }
+          ]
+        },
+        { text: 'Notas', style: 'notesTitle', margin: [0, 20, 0, 3] },
+        { text: 'Foi um prazer fazer negócio consigo.', margin: [0, 0, 0, 10] },
+        { text: 'Termos e Condições', style: 'notesTitle' }
+      ],
+      styles: {
+        invoiceTitle: { fontSize: 20, bold: true },
+        notesTitle: { bold: true }
+      },
+      defaultStyle: { fontSize: 10 }
+    };
+    pdfMake.createPdf(docDefinition).open();
+  }
+
+  document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('button.imprimir').forEach(btn => {
+      btn.addEventListener('click', function () {
+        const tr = this.closest('tr');
+        const venda = {
+          id: tr.dataset.id,
+          data: tr.dataset.data,
+          cliente: tr.dataset.cliente,
+          produto: tr.dataset.produto,
+          descricao: tr.dataset.descricao,
+          quantidade: tr.dataset.quantidade,
+          valor: tr.dataset.valor
+        };
+        gerarPdf(venda);
+      });
+    });
+  });
+</script>
+</body>
+</html>

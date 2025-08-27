@@ -41,6 +41,7 @@
     <div class="collapse ms-3" id="submenuCaixa" data-bs-parent="#sidebar-menu">
       <nav class="nav nav-pills flex-column">
         <a href="<?= site_url('caixa/nova_venda'); ?>" class="nav-link text-white">Nova Venda</a>
+        <a href="<?= site_url('vendas'); ?>" class="nav-link text-white">Vendas</a>
         <a href="<?= site_url('caixa/fluxo'); ?>" class="nav-link text-white">Fluxo de Caixa</a>
         <a href="<?= site_url('saidas'); ?>" class="nav-link text-white">Saídas</a>
       </nav>
