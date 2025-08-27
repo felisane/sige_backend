@@ -23,7 +23,13 @@ class Venda_model extends CI_Model {
     }
 
     public function todas() {
-        return $this->db->order_by('data', 'DESC')->get('vendas')->result();
+        return $this->db
+            ->select('vendas.*, produtos.nome AS produto_nome')
+            ->from('vendas')
+            ->join('produtos', 'produtos.id = vendas.produto', 'left')
+            ->order_by('data', 'DESC')
+            ->get()
+            ->result();
     }
 
     public function por_cliente($cliente)
