@@ -34,7 +34,8 @@ class Caixa extends MY_Controller {
             'cliente'    => $cliente['nome'],
             'produto'    => $produto->nome,
             'quantidade' => $this->input->post('quantidade'),
-            'valor'      => $this->input->post('valor')
+            'valor'      => $this->input->post('valor'),
+            'forma_pagamento' => $this->input->post('forma_pagamento')
         ];
 
         $id = $this->Venda_model->inserir($venda);
