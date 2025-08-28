@@ -75,6 +75,7 @@
                   <th>Descrição</th>
                   <th>Quantidade</th>
                   <th>Tipo</th>
+                  <th>Forma de Pagamento</th>
                   <th>Valor (Kz)</th>
                 </tr>
               </thead>
@@ -85,6 +86,7 @@
                   <td><?= htmlspecialchars($venda->produto, ENT_QUOTES, 'UTF-8'); ?></td>
                   <td><?= $venda->quantidade; ?></td>
                   <td><span class="badge bg-success">Entrada</span></td>
+                  <td><?= htmlspecialchars($venda->forma_pagamento, ENT_QUOTES, 'UTF-8'); ?></td>
                   <td data-order="<?= $venda->valor; ?>"><?= number_format($venda->valor, 2, ',', '.'); ?></td>
                 </tr>
                 <?php endforeach; ?>
@@ -94,6 +96,7 @@
                   <td><?= htmlspecialchars($saida->descricao, ENT_QUOTES, 'UTF-8'); ?></td>
                   <td>-</td>
                   <td><span class="badge bg-danger">Saída</span></td>
+                  <td>-</td>
                   <td data-order="<?= $saida->valor; ?>"><?= number_format($saida->valor, 2, ',', '.'); ?></td>
                 </tr>
                 <?php endforeach; ?>
@@ -130,7 +133,7 @@
         tabela.rows({ filter: 'applied' }).every(function () {
           const data = this.data();
           const tipo = $('<div>').html(data[3]).text().trim();
-          const valor = parseFloat($(this.node()).find('td').eq(4).data('order'));
+          const valor = parseFloat($(this.node()).find('td').eq(5).data('order'));
           if (tipo === 'Entrada') entradas += valor;
           else if (tipo === 'Saída') saidas += valor;
         });
@@ -221,7 +224,7 @@
         tabela.rows().every(function () {
           const data = this.data();
           const tipoMov = $('<div>').html(data[3]).text().trim();
-          const valor = parseFloat($(this.node()).find('td').eq(4).data('order'));
+          const valor = parseFloat($(this.node()).find('td').eq(5).data('order'));
           const [d, m, y] = data[0].split('/').map(Number);
           const rowDate = new Date(y, m - 1, d);
           if (rowDate >= start && rowDate <= end) {
