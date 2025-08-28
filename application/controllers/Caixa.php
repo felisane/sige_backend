@@ -7,6 +7,8 @@ class Caixa extends MY_Controller {
         parent::__construct();
         $this->load->model('Venda_model');
         $this->load->model('Saida_model');
+        $this->load->model('Cliente_model');
+        $this->load->model('Produto_model');
     }
 
     public function nova_venda()
@@ -16,11 +18,21 @@ class Caixa extends MY_Controller {
 
     public function registrar_venda()
     {
+        $cliente_nome = $this->input->post('cliente');
+        $produto_nome = $this->input->post('produto');
+
+        $cliente = $this->Cliente_model->get_by_nome($cliente_nome);
+        $produto = $this->Produto_model->buscar_por_nome($produto_nome);
+
+        if (!$cliente || !$produto) {
+            echo json_encode(['status' => 'error', 'message' => 'Cliente ou produto inválido']);
+            return;
+        }
+
         $venda = [
             'data'       => $this->input->post('data'),
-            'cliente'    => $this->input->post('cliente'),
-            'produto'    => $this->input->post('produto'),
-            'descricao'  => $this->input->post('descricao'),
+            'cliente'    => $cliente['nome'],
+            'produto'    => $produto->nome,
             'quantidade' => $this->input->post('quantidade'),
             'valor'      => $this->input->post('valor')
         ];
