@@ -22,6 +22,7 @@
           <tr>
             <th>Data</th>
             <th>Descrição</th>
+            <th>Forma de Pagamento</th>
             <th>Valor (Kz)</th>
           </tr>
         </thead>
@@ -30,6 +31,7 @@
           <tr>
             <td><?= date('d/m/Y', strtotime($s->data)); ?></td>
             <td><?= htmlspecialchars($s->descricao, ENT_QUOTES, 'UTF-8'); ?></td>
+            <td><?= htmlspecialchars($s->forma_pagamento, ENT_QUOTES, 'UTF-8'); ?></td>
             <td><?= number_format($s->valor, 2, ',', '.'); ?></td>
           </tr>
           <?php endforeach; ?>

@@ -24,7 +24,8 @@ class Saidas extends MY_Controller {
         $saida = [
             'data' => $this->input->post('data'),
             'descricao' => $this->input->post('descricao'),
-            'valor' => $this->input->post('valor')
+            'valor' => $this->input->post('valor'),
+            'forma_pagamento' => $this->input->post('forma_pagamento')
         ];
 
         if ($this->Saida_model->insert($saida)) {

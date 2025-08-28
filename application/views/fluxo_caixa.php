@@ -96,7 +96,7 @@
                   <td><?= htmlspecialchars($saida->descricao, ENT_QUOTES, 'UTF-8'); ?></td>
                   <td>-</td>
                   <td><span class="badge bg-danger">Saída</span></td>
-                  <td>-</td>
+                  <td><?= htmlspecialchars($saida->forma_pagamento, ENT_QUOTES, 'UTF-8'); ?></td>
                   <td data-order="<?= $saida->valor; ?>"><?= number_format($saida->valor, 2, ',', '.'); ?></td>
                 </tr>
                 <?php endforeach; ?>
