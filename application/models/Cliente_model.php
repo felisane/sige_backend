@@ -17,6 +17,10 @@ class Cliente_model extends CI_Model {
         return $this->get_all();
     }
 
+    public function get_by_nome($nome) {
+        return $this->db->get_where($this->table, ['nome' => $nome])->row_array();
+    }
+
     public function get($id) {
         return $this->db->get_where($this->table, ['id' => $id])->row_array();
     }

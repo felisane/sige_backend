@@ -43,17 +43,11 @@
             </div>
             <div class="mb-3">
               <label for="clienteVenda" class="form-label">Cliente</label>
-              <input type="text" class="form-control" id="clienteVenda" name="cliente" list="clientesList" placeholder="Digite o nome do cliente" required>
-              <datalist id="clientesList"></datalist>
+              <select class="form-select" id="clienteVenda" name="cliente" required></select>
             </div>
             <div class="mb-3">
               <label for="produtoVenda" class="form-label">Produto/Serviço</label>
-              <input type="text" class="form-control" id="produtoVenda" name="produto" list="produtosList" placeholder="Digite ou selecione o produto" required>
-              <datalist id="produtosList"></datalist>
-            </div>
-            <div class="mb-3 d-none" id="servicoDescricaoDiv">
-              <label for="descricaoServico" class="form-label">Descrição do Serviço</label>
-              <input type="text" class="form-control" id="descricaoServico" name="descricao" placeholder="Descreva o serviço">
+              <select class="form-select" id="produtoVenda" name="produto" required></select>
             </div>
             <div class="mb-3">
               <label for="quantidadeVenda" class="form-label">Quantidade</label>
@@ -104,48 +98,35 @@
 
     document.addEventListener('DOMContentLoaded', async function() {
       toggleLoading(true);
-      const clienteList = document.getElementById('clientesList');
+      const clienteSelect = document.getElementById('clienteVenda');
       try {
         const clientesRes = await fetch('<?= site_url('clientes/todos'); ?>');
         const clientes = await clientesRes.json();
         clientes.forEach(c => {
           const option = document.createElement('option');
           option.value = c.nome;
-          option.dataset.id = c.id;
-          clienteList.appendChild(option);
+          option.textContent = c.nome;
+          clienteSelect.appendChild(option);
         });
       } catch (e) {}
 
-      const produtoInput = document.getElementById('produtoVenda');
-      const produtoList = document.getElementById('produtosList');
-      let produtosDB = [];
+      const produtoSelect = document.getElementById('produtoVenda');
       try {
         const produtosRes = await fetch('<?= site_url('produtos/todos'); ?>');
-        produtosDB = await produtosRes.json();
+        const produtosDB = await produtosRes.json();
         produtosDB.forEach(p => {
           const option = document.createElement('option');
           option.value = p.nome;
-          option.dataset.id = p.id;
+          option.textContent = p.nome;
           option.dataset.preco = p.preco;
-          produtoList.appendChild(option);
+          produtoSelect.appendChild(option);
         });
       } catch (e) {}
 
       const valorInput = document.getElementById('valorVenda');
-      const descDiv = document.getElementById('servicoDescricaoDiv');
-      const descInput = document.getElementById('descricaoServico');
-
-      produtoInput.addEventListener('input', function() {
-        const prod = produtosDB.find(p => p.nome.toLowerCase() === this.value.toLowerCase());
-        if (prod) {
-          descDiv.classList.add('d-none');
-          descInput.required = false;
-          valorInput.value = prod.preco;
-        } else {
-          descDiv.classList.remove('d-none');
-          descInput.required = true;
-          valorInput.value = '';
-        }
+      produtoSelect.addEventListener('change', function() {
+        const selected = this.options[this.selectedIndex];
+        valorInput.value = selected ? selected.dataset.preco : '';
       });
 
       const form = document.getElementById('vendaForm');
@@ -171,8 +152,6 @@
             setTimeout(() => {
               window.location.href = "<?= site_url('produtos/lista'); ?>";
             }, 3000);
-            descDiv.classList.add('d-none');
-            descInput.required = false;
           } else {
             showToast('toast-error');
           }
@@ -245,7 +224,7 @@
                   { text: 'Montante', bold: true }
                 ],
                 [
-                  venda.descricao ? venda.descricao : venda.produto,
+                  venda.produto,
                   'un',
                   venda.quantidade,
                   Number(venda.valor).toFixed(2),

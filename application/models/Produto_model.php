@@ -15,6 +15,10 @@ class Produto_model extends CI_Model {
         return $this->db->get('produtos')->result();
     }
 
+    public function buscar_por_nome($nome) {
+        return $this->db->get_where('produtos', ['nome' => $nome])->row();
+    }
+
     public function apagar($id) {
         return $this->db->delete('produtos', ['id' => $id]);
     }
