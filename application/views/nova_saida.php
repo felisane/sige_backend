@@ -32,6 +32,16 @@
             <label for="valorSaida" class="form-label">Valor (Kz)</label>
             <input type="number" step="0.01" class="form-control" id="valorSaida" name="valor" required>
           </div>
+          <div class="mb-3">
+            <label for="formaPagamentoSaida" class="form-label">Forma de Pagamento</label>
+            <select class="form-select" id="formaPagamentoSaida" name="forma_pagamento" required>
+              <option value="TPA">TPA</option>
+              <option value="CASH">CASH</option>
+              <option value="Cartão Weza">Cartão Weza</option>
+              <option value="Cartão Sérgio">Cartão Sérgio</option>
+              <option value="Outro">Outro</option>
+            </select>
+          </div>
           <button type="submit" class="btn btn-primary"><i class="bi bi-save"></i> Registrar Saída</button>
         </form>
       </div>
