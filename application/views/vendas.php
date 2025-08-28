@@ -79,6 +79,13 @@
       });
     }
 
+    function formatCurrency(value) {
+      return Number(value).toLocaleString('pt-PT', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      }) + ' kz';
+    }
+
     async function gerarPdf(venda) {
       const logo = await getBase64ImageFromURL('<?= base_url('assets/logo.jpeg'); ?>');
       const total = Number(venda.quantidade) * Number(venda.valor);
@@ -137,8 +144,8 @@
                   venda.descricao ? venda.descricao : venda.produto,
                   'un',
                   venda.quantidade,
-                  Number(venda.valor).toFixed(2),
-                  total.toFixed(2)
+                  formatCurrency(venda.valor),
+                  formatCurrency(total)
                 ]
               ]
             }
@@ -150,8 +157,8 @@
                 width: 'auto',
                 table: {
                   body: [
-                    [{ text: 'Subtotal', bold: true }, total.toFixed(2)],
-                    [{ text: 'Total', bold: true }, total.toFixed(2)]
+                    [{ text: 'Subtotal', bold: true }, formatCurrency(total)],
+                    [{ text: 'Total', bold: true }, formatCurrency(total)]
                   ]
                 },
                 layout: 'noBorders'
