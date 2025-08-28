@@ -68,95 +68,108 @@
 <script src="<?= base_url('assets/tables.js'); ?>"></script>
 <script src="<?= base_url('assets/layout.js'); ?>"></script>
 <script>
-  function gerarPdf(venda) {
-    const total = Number(venda.quantidade) * Number(venda.valor);
-    const docDefinition = {
-      content: [
-        {
-          columns: [
-            {
-              stack: [
-                { text: 'Delicias das Ribeirinho', bold: true },
-                { text: '0055 009 0252914701 85' },
-                { text: 'Luanda' },
-                { text: 'COQUEIRO' }
-              ]
-            },
-            { text: 'FATURA', style: 'invoiceTitle', alignment: 'right' }
-          ]
-        },
-        { text: '\n' },
-        {
-          columns: [
-            {
-              width: '*',
-              stack: [
-                { text: 'Faturar a', bold: true, margin: [0, 0, 0, 5] },
-                { text: venda.cliente }
-              ]
-            },
-            {
-              width: 'auto',
-              table: {
-                body: [
-                  [{ text: 'Número de fatura', bold: true }, `INV-${String(venda.id).padStart(4, '0')}`],
-                  [{ text: 'Data da fatura', bold: true }, venda.data],
-                  [{ text: 'Data de vencimento', bold: true }, venda.data]
+  async function getBase64ImageFromURL(url) {
+      const response = await fetch(url);
+      const blob = await response.blob();
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onerror = reject;
+        reader.onload = () => resolve(reader.result);
+        reader.readAsDataURL(blob);
+      });
+    }
+
+    async function gerarPdf(venda) {
+      const logo = await getBase64ImageFromURL('<?= base_url('assets/logo.jpeg'); ?>');
+      const total = Number(venda.quantidade) * Number(venda.valor);
+      const docDefinition = {
+        content: [
+          {
+            columns: [
+              {
+                stack: [
+                  { image: logo, width: 80, margin: [0, 0, 0, 5] },
+                  { text: 'Delicias das Ribeirinho', bold: true },
+                  { text: '0055 009 0252914701 85' },
+                  { text: 'Luanda' },
+                  { text: 'COQUEIRO' }
                 ]
               },
-              layout: 'noBorders'
-            }
-          ]
-        },
-        { text: '\n' },
-        {
-          table: {
-            widths: ['*', 'auto', 'auto', 'auto', 'auto'],
-            body: [
-              [
-                { text: 'Descrição', bold: true },
-                { text: 'Unidade', bold: true },
-                { text: 'Quantidade', bold: true },
-                { text: 'Taxa', bold: true },
-                { text: 'Montante', bold: true }
-              ],
-              [
-                venda.descricao ? venda.descricao : venda.produto,
-                'un',
-                venda.quantidade,
-                Number(venda.valor).toFixed(2),
-                total.toFixed(2)
-              ]
+              { text: 'FATURA', style: 'invoiceTitle', alignment: 'right' }
             ]
-          }
-        },
-        {
-          columns: [
-            { text: '', width: '*' },
-            {
-              width: 'auto',
-              table: {
-                body: [
-                  [{ text: 'Subtotal', bold: true }, total.toFixed(2)],
-                  [{ text: 'Total', bold: true }, total.toFixed(2)]
+          },
+            { text: '\\n' },
+          {
+            columns: [
+              {
+                width: '*',
+                stack: [
+                  { text: 'Faturar a', bold: true, margin: [0, 0, 0, 5] },
+                  { text: venda.cliente }
                 ]
               },
-              layout: 'noBorders'
+              {
+                width: 'auto',
+                table: {
+                  body: [
+                    [{ text: 'Número de fatura', bold: true }, `INV-${String(venda.id).padStart(4, '0')}`],
+                    [{ text: 'Data da fatura', bold: true }, venda.data],
+                    [{ text: 'Data de vencimento', bold: true }, venda.data]
+                  ]
+                },
+                layout: 'noBorders'
+              }
+            ]
+          },
+            { text: '\\n' },
+          {
+            table: {
+              widths: ['*', 'auto', 'auto', 'auto', 'auto'],
+              body: [
+                [
+                  { text: 'Descrição', bold: true },
+                  { text: 'Unidade', bold: true },
+                  { text: 'Quantidade', bold: true },
+                  { text: 'Taxa', bold: true },
+                  { text: 'Montante', bold: true }
+                ],
+                [
+                  venda.descricao ? venda.descricao : venda.produto,
+                  'un',
+                  venda.quantidade,
+                  Number(venda.valor).toFixed(2),
+                  total.toFixed(2)
+                ]
+              ]
             }
-          ]
+          },
+          {
+            columns: [
+              { text: '', width: '*' },
+              {
+                width: 'auto',
+                table: {
+                  body: [
+                    [{ text: 'Subtotal', bold: true }, total.toFixed(2)],
+                    [{ text: 'Total', bold: true }, total.toFixed(2)]
+                  ]
+                },
+                layout: 'noBorders'
+              }
+            ]
+          },
+          { text: 'Notas', style: 'notesTitle', margin: [0, 20, 0, 3] },
+          { text: 'Foi um prazer fazer negócio consigo.', margin: [0, 0, 0, 10] },
+          { text: 'Termos e Condições', style: 'notesTitle' }
+        ],
+        styles: {
+          invoiceTitle: { fontSize: 20, bold: true },
+          notesTitle: { bold: true }
         },
-        { text: 'Notas', style: 'notesTitle', margin: [0, 20, 0, 3] },
-        { text: 'Foi um prazer fazer negócio consigo.', margin: [0, 0, 0, 10] },
-        { text: 'Termos e Condições', style: 'notesTitle' }
-      ],
-      styles: {
-        invoiceTitle: { fontSize: 20, bold: true },
-        notesTitle: { bold: true }
-      },
-      defaultStyle: { fontSize: 10 }
-    };
-    pdfMake.createPdf(docDefinition).open();
-  }
+        defaultStyle: { fontSize: 10 }
+      };
+      pdfMake.createPdf(docDefinition).open();
+    }
 
   document.addEventListener('DOMContentLoaded', function () {
     document.querySelectorAll('button.imprimir').forEach(btn => {

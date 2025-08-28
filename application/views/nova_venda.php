@@ -171,7 +171,19 @@
       setTimeout(() => { toast.style.display = 'none'; }, 3000);
     }
 
-    function gerarPdf(venda) {
+    async function getBase64ImageFromURL(url) {
+      const response = await fetch(url);
+      const blob = await response.blob();
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onerror = reject;
+        reader.onload = () => resolve(reader.result);
+        reader.readAsDataURL(blob);
+      });
+    }
+
+    async function gerarPdf(venda) {
+      const logo = await getBase64ImageFromURL('<?= base_url('assets/logo.jpeg'); ?>');
       const total = Number(venda.quantidade) * Number(venda.valor);
       const docDefinition = {
         content: [
@@ -179,6 +191,7 @@
             columns: [
               {
                 stack: [
+                  { image: logo, width: 80, margin: [0, 0, 0, 5] },
                   { text: 'Delicias das Ribeirinho', bold: true },
                   { text: '0055 009 0252914701 85' },
                   { text: 'Luanda' },
@@ -188,7 +201,7 @@
               { text: 'FATURA', style: 'invoiceTitle', alignment: 'right' }
             ]
           },
-          { text: '\n' },
+          { text: '\\n' },
           {
             columns: [
               {
@@ -211,7 +224,7 @@
               }
             ]
           },
-          { text: '\n' },
+          { text: '\\n' },
           {
             table: {
               widths: ['*', 'auto', 'auto', 'auto', 'auto'],
