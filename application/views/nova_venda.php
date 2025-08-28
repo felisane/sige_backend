@@ -57,6 +57,14 @@
               <label for="valorVenda" class="form-label">Valor (Kz)</label>
               <input type="number" class="form-control" id="valorVenda" name="valor" required>
             </div>
+            <div class="mb-3">
+              <label for="formaPagamento" class="form-label">Forma de Pagamento</label>
+              <select class="form-select" id="formaPagamento" name="forma_pagamento" required>
+                <option value="TPA">TPA</option>
+                <option value="CASH">CASH</option>
+                <option value="Outro">Outro</option>
+              </select>
+            </div>
             <button type="submit" class="btn btn-primary"><i class="bi bi-save"></i> Registrar Venda</button>
           </form>
         </div>
