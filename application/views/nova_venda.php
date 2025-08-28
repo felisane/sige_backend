@@ -62,6 +62,8 @@
               <select class="form-select" id="formaPagamento" name="forma_pagamento" required>
                 <option value="TPA">TPA</option>
                 <option value="CASH">CASH</option>
+                <option value="Cartão Sérgio">Cartão Sérgio</option>
+                <option value="Cartão Weza">Cartão Weza</option>
                 <option value="Outro">Outro</option>
               </select>
             </div>
