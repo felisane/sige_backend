@@ -192,22 +192,22 @@
               {
                 stack: [
                   { image: logo, width: 80, margin: [0, 0, 0, 5] },
-                  { text: 'Delicias das Ribeirinho', bold: true },
-                  { text: '0055 009 0252914701 85' },
-                  { text: 'Luanda' },
-                  { text: 'COQUEIRO' }
+                  { text: 'Felase KB - Prestação de Serviços e Comércio Geral', bold: true },
+                  { text: '5000789470' },
+                  { text: 'Morro Bento, Luanda, Luanda, Angola' },
+                  { text: '930 748 735' }
                 ]
               },
               { text: 'FATURA', style: 'invoiceTitle', alignment: 'right' }
             ]
           },
-          { text: '\\n' },
+          { text: '\|' },
           {
             columns: [
               {
                 width: '*',
                 stack: [
-                  { text: 'Faturar a', bold: true, margin: [0, 0, 0, 5] },
+                  { text: 'Facturar a', bold: true, margin: [0, 0, 0, 5] },
                   { text: venda.cliente }
                 ]
               },
@@ -215,8 +215,8 @@
                 width: 'auto',
                 table: {
                   body: [
-                    [{ text: 'Número de fatura', bold: true }, `INV-${String(venda.id).padStart(4, '0')}`],
-                    [{ text: 'Data da fatura', bold: true }, venda.data],
+                    [{ text: 'Número da factura', bold: true }, `INV-${String(venda.id).padStart(4, '0')}`],
+                    [{ text: 'Data da factura', bold: true }, venda.data],
                     [{ text: 'Data de vencimento', bold: true }, venda.data]
                   ]
                 },
@@ -224,7 +224,7 @@
               }
             ]
           },
-          { text: '\\n' },
+          { text: '\|' },
           {
             table: {
               widths: ['*', 'auto', 'auto', 'auto', 'auto'],
@@ -262,8 +262,8 @@
             ]
           },
           { text: 'Notas', style: 'notesTitle', margin: [0, 20, 0, 3] },
-          { text: 'Foi um prazer fazer negócio consigo.', margin: [0, 0, 0, 10] },
-          { text: 'Termos e Condições', style: 'notesTitle' }
+          { text: 'Mais do que assistência, oferecemos soluções.', margin: [0, 0, 0, 10] },
+          { text: 'Obrigado pela preferência! Conte sempre connosco.', style: 'notesTitle' }
         ],
         styles: {
           invoiceTitle: { fontSize: 20, bold: true },
