@@ -35,7 +35,7 @@
             <option value="all">Todos</option>
             <option value="day">Dia</option>
             <option value="week">Semana</option>
-            <option value="month">Mês</option>
+            <option value="month" selected>Mês</option>
           </select>
           <span id="subFiltro" class="d-none me-2"></span>
           <div class="dropdown">
@@ -184,6 +184,13 @@
         $('#subFiltro').toggleClass('d-none', periodo === 'all');
       }
 
+      // Apply default filter for the current month on page load
+      const today = new Date();
+      const currentMonth = today.toISOString().slice(0, 7);
+      $('#filtroPeriodo').val('month');
+      mostrarSubFiltro('month');
+      $('#subFiltro input').val(currentMonth);
+      aplicarFiltro('month', currentMonth);
 
       tabela.on('draw', function () {
         calcularTotais();
