@@ -45,7 +45,9 @@
             <td><?= $v->cliente; ?></td>
             <td><?= $v->produto; ?></td>
             <td><?= $v->quantidade; ?></td>
-            <td><?= number_format($v->valor, 2, ',', '.'); ?></td>
+            <td data-order="<?= $v->valor * $v->quantidade; ?>">
+              <?= number_format($v->valor * $v->quantidade, 2, ',', '.'); ?>
+            </td>
             <td><button class="btn btn-sm btn-outline-primary imprimir"><i class="bi bi-printer"></i></button></td>
           </tr>
           <?php endforeach; ?>

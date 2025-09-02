@@ -67,13 +67,14 @@
               </thead>
               <tbody>
                 <?php foreach ($vendas as $venda): ?>
+                <?php $total = $venda->valor * $venda->quantidade; ?>
                 <tr>
                   <td><?= date('d/m/Y', strtotime($venda->data)); ?></td>
                   <td><?= htmlspecialchars($venda->produto, ENT_QUOTES, 'UTF-8'); ?></td>
                   <td><?= $venda->quantidade; ?></td>
                   <td><span class="badge bg-success">Entrada</span></td>
                   <td><?= htmlspecialchars($venda->forma_pagamento, ENT_QUOTES, 'UTF-8'); ?></td>
-                  <td data-order="<?= $venda->valor; ?>"><?= number_format($venda->valor, 2, ',', '.'); ?></td>
+                  <td data-order="<?= $total; ?>"><?= number_format($total, 2, ',', '.'); ?></td>
                 </tr>
                 <?php endforeach; ?>
                 <?php foreach ($saidas as $saida): ?>
