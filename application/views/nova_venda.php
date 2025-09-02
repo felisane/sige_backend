@@ -46,16 +46,34 @@
               <select class="form-select" id="clienteVenda" name="cliente" required></select>
             </div>
             <div class="mb-3">
-              <label for="produtoVenda" class="form-label">Produto/Serviço</label>
-              <select class="form-select" id="produtoVenda" name="produto" required></select>
-            </div>
-            <div class="mb-3">
-              <label for="quantidadeVenda" class="form-label">Quantidade</label>
-              <input type="number" class="form-control" id="quantidadeVenda" name="quantidade" required>
-            </div>
-            <div class="mb-3">
-              <label for="valorVenda" class="form-label">Valor (Kz)</label>
-              <input type="number" class="form-control" id="valorVenda" name="valor" required>
+              <label class="form-label">Itens</label>
+              <table class="table" id="itensTable">
+                <thead>
+                  <tr>
+                    <th>Produto/Serviço</th>
+                    <th>Quantidade</th>
+                    <th>Valor (Kz)</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr class="item-row">
+                    <td>
+                      <select class="form-select produto-select" name="produtos[]" required></select>
+                    </td>
+                    <td>
+                      <input type="number" class="form-control quantidade-input" name="quantidades[]" required>
+                    </td>
+                    <td>
+                      <input type="number" class="form-control valor-input" name="valores[]" required>
+                    </td>
+                    <td>
+                      <button type="button" class="btn btn-danger btn-sm remove-item">&times;</button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+              <button type="button" class="btn btn-secondary btn-sm" id="addItem"><i class="bi bi-plus"></i> Adicionar Produto</button>
             </div>
             <div class="mb-3">
               <label for="formaPagamento" class="form-label">Forma de Pagamento</label>
@@ -120,23 +138,49 @@
         });
       } catch (e) {}
 
-      const produtoSelect = document.getElementById('produtoVenda');
+      const itensTable = document.getElementById('itensTable').querySelector('tbody');
+      const addItemBtn = document.getElementById('addItem');
+      let produtosDB = [];
       try {
         const produtosRes = await fetch('<?= site_url('produtos/todos'); ?>');
-        const produtosDB = await produtosRes.json();
+        produtosDB = await produtosRes.json();
+        populateProdutos(document.querySelector('.produto-select'));
+      } catch (e) {}
+
+      function populateProdutos(select) {
+        select.innerHTML = '';
         produtosDB.forEach(p => {
           const option = document.createElement('option');
           option.value = p.nome;
           option.textContent = p.nome;
           option.dataset.preco = p.preco;
-          produtoSelect.appendChild(option);
+          select.appendChild(option);
         });
-      } catch (e) {}
+      }
 
-      const valorInput = document.getElementById('valorVenda');
-      produtoSelect.addEventListener('change', function() {
-        const selected = this.options[this.selectedIndex];
-        valorInput.value = selected ? selected.dataset.preco : '';
+      function attachEvents(row) {
+        const select = row.querySelector('.produto-select');
+        const valorInput = row.querySelector('.valor-input');
+        select.addEventListener('change', function() {
+          const selected = this.options[this.selectedIndex];
+          valorInput.value = selected ? selected.dataset.preco : '';
+        });
+        row.querySelector('.remove-item').addEventListener('click', () => {
+          if (itensTable.rows.length > 1) {
+            row.remove();
+          }
+        });
+      }
+
+      attachEvents(document.querySelector('.item-row'));
+
+      addItemBtn.addEventListener('click', () => {
+        const newRow = document.querySelector('.item-row').cloneNode(true);
+        populateProdutos(newRow.querySelector('.produto-select'));
+        newRow.querySelector('.quantidade-input').value = '';
+        newRow.querySelector('.valor-input').value = '';
+        itensTable.appendChild(newRow);
+        attachEvents(newRow);
       });
 
       const form = document.getElementById('vendaForm');
@@ -153,10 +197,8 @@
         .then(response => response.json())
         .then(data => {
           if (data.status === 'success') {
-            const vendaInfo = Object.fromEntries(formData.entries());
-            vendaInfo.id = data.id;
             if (confirm('Deseja imprimir a factura em PDF?')) {
-              gerarPdf(vendaInfo);
+              gerarPdf(data);
             }
             showToast('toast-success');
             setTimeout(() => {
@@ -201,7 +243,28 @@
 
     async function gerarPdf(venda) {
       const logo = await getBase64ImageFromURL('<?= base_url('assets/logo.jpeg'); ?>');
-      const total = Number(venda.quantidade) * Number(venda.valor);
+      let total = 0;
+      const body = [
+        [
+          { text: 'Descrição', bold: true },
+          { text: 'Unidade', bold: true },
+          { text: 'Quantidade', bold: true },
+          { text: 'Taxa', bold: true },
+          { text: 'Montante', bold: true }
+        ]
+      ];
+      venda.vendas.forEach(item => {
+        const montante = Number(item.quantidade) * Number(item.valor);
+        total += montante;
+        body.push([
+          item.produto,
+          'un',
+          item.quantidade,
+          formatCurrency(item.valor),
+          formatCurrency(montante)
+        ]);
+      });
+      const numero = venda.vendas.length > 0 ? venda.vendas[0].id : 0;
       const docDefinition = {
         content: [
           {
@@ -232,7 +295,7 @@
                 width: 'auto',
                 table: {
                   body: [
-                    [{ text: 'Número da factura', bold: true }, `INV-${String(venda.id).padStart(4, '0')}`],
+                    [{ text: 'Número da factura', bold: true }, `INV-${String(numero).padStart(4, '0')}`],
                     [{ text: 'Data da factura', bold: true }, venda.data],
                     [{ text: 'Data de vencimento', bold: true }, venda.data]
                   ]
@@ -245,22 +308,7 @@
           {
             table: {
               widths: ['*', 'auto', 'auto', 'auto', 'auto'],
-              body: [
-                [
-                  { text: 'Descrição', bold: true },
-                  { text: 'Unidade', bold: true },
-                  { text: 'Quantidade', bold: true },
-                  { text: 'Taxa', bold: true },
-                  { text: 'Montante', bold: true }
-                ],
-                [
-                  venda.produto,
-                  'un',
-                  venda.quantidade,
-                  formatCurrency(venda.valor),
-                  formatCurrency(total)
-                ]
-              ]
+              body: body
             }
           },
           {
