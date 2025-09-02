@@ -49,21 +49,7 @@
         </div>
       </div>
 
-      <div class="card mb-4">
-        <div class="card-body">
-          <h5 class="card-title">Comparativo de Períodos</h5>
-          <div class="mb-3">
-            <label for="tipoComparativo" class="form-label">Comparar:</label>
-            <select id="tipoComparativo" class="form-select d-inline w-auto">
-              <option value="day">Dia</option>
-              <option value="week">Semana</option>
-              <option value="month">Mês</option>
-            </select>
-            <span id="comparativoInputs"></span>
-          </div>
-          <p id="resultadoComparativo" class="fw-bold"></p>
-        </div>
-      </div>
+      <!-- Filtro Comparativo removido -->
 
       <div class="card mb-4">
         <div class="card-body">
@@ -198,66 +184,12 @@
         $('#subFiltro').toggleClass('d-none', periodo === 'all');
       }
 
-      function mostrarInputsComparativo(tipo) {
-        let html = '';
-        if (tipo === 'day') html = '<input type="date" id="compInput1" class="form-control d-inline w-auto me-2" /> <input type="date" id="compInput2" class="form-control d-inline w-auto" />';
-        else if (tipo === 'week') html = '<input type="week" id="compInput1" class="form-control d-inline w-auto me-2" /> <input type="week" id="compInput2" class="form-control d-inline w-auto" />';
-        else if (tipo === 'month') html = '<input type="month" id="compInput1" class="form-control d-inline w-auto me-2" /> <input type="month" id="compInput2" class="form-control d-inline w-auto" />';
-        $('#comparativoInputs').html(html);
-      }
-
-      function obterSaldoPeriodo(tipo, valor) {
-        let start, end;
-        if (tipo === 'day') {
-          start = end = new Date(valor);
-        } else if (tipo === 'week') {
-          const [year, wk] = valor.split('-W').map(Number);
-          start = weekToDate(year, wk);
-          end = new Date(start);
-          end.setDate(start.getDate() + 6);
-        } else if (tipo === 'month') {
-          const [year, month] = valor.split('-').map(Number);
-          start = new Date(year, month - 1, 1);
-          end = new Date(year, month, 0);
-        }
-        let entradas = 0, saidas = 0;
-        tabela.rows().every(function () {
-          const data = this.data();
-          const tipoMov = $('<div>').html(data[3]).text().trim();
-          const valor = parseFloat($(this.node()).find('td').eq(5).data('order'));
-          const [d, m, y] = data[0].split('/').map(Number);
-          const rowDate = new Date(y, m - 1, d);
-          if (rowDate >= start && rowDate <= end) {
-            if (tipoMov === 'Entrada') entradas += valor;
-            else if (tipoMov === 'Saída') saidas += valor;
-          }
-        });
-        return entradas - saidas;
-      }
-
-      function atualizarGraficoComparativo() {
-        const tipo = $('#tipoComparativo').val();
-        const v1 = $('#compInput1').val();
-        const v2 = $('#compInput2').val();
-        if (!v1 || !v2) return;
-        const total1 = obterSaldoPeriodo(tipo, v1);
-        const total2 = obterSaldoPeriodo(tipo, v2);
-        const perc = total1 !== 0 ? ((total2 - total1) / total1) * 100 : 0;
-        $('#resultadoComparativo').text(`Desempenho: ${perc.toFixed(2)}%`);
-      }
-
-      $('#tipoComparativo').on('change', function () {
-        mostrarInputsComparativo(this.value);
-      });
-
-      $('#comparativoInputs').on('change', 'input', atualizarGraficoComparativo);
 
       tabela.on('draw', function () {
         calcularTotais();
       });
 
-      mostrarInputsComparativo('day');
-      calcularTotais();
+        calcularTotais();
     });
   </script>
   <script src="<?= base_url('assets/layout.js'); ?>"></script>
