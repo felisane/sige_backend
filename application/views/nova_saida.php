@@ -51,8 +51,8 @@
 
 <div id="toast-success" class="toast align-items-center text-bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true" style="display:none;">
   <div class="d-flex">
-    <div class="toast-body">
-      Saída registrada com sucesso!
+    <div class="toast-body" id="toast-success-message">
+      Saída registrada e aguardando confirmação do administrador.
     </div>
     <button type="button" class="btn-close btn-close-white me-2 m-auto" onclick="hideToast('toast-success')"></button>
   </div>
@@ -60,7 +60,7 @@
 
 <div id="toast-error" class="toast align-items-center text-bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true" style="display:none;">
   <div class="d-flex">
-    <div class="toast-body">
+    <div class="toast-body" id="toast-error-message">
       Ocorreu um erro ao registrar a saída.
     </div>
     <button type="button" class="btn-close btn-close-white me-2 m-auto" onclick="hideToast('toast-error')"></button>
@@ -90,13 +90,20 @@
     .then(response => response.json())
     .then(data => {
       if (data.status === 'success') {
+        document.getElementById('toast-success-message').textContent = data.message || 'Saída registrada e aguardando confirmação do administrador.';
         showToast('toast-success');
         setTimeout(() => { window.location.href = '<?= site_url('saidas'); ?>'; }, 3000);
       } else {
+        if (data.message) {
+          document.getElementById('toast-error-message').textContent = data.message;
+        }
         showToast('toast-error');
       }
     })
-    .catch(() => showToast('toast-error'));
+    .catch(() => {
+      document.getElementById('toast-error-message').textContent = 'Não foi possível processar o pedido. Tente novamente.';
+      showToast('toast-error');
+    });
   });
 </script>
 </body>

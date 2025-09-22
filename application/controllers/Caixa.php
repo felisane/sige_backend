@@ -68,7 +68,7 @@ class Caixa extends MY_Controller {
     public function fluxo()
     {
         $data['vendas'] = $this->Venda_model->todas();
-        $data['saidas'] = $this->Saida_model->all();
+        $data['saidas'] = $this->Saida_model->all('confirmada');
         $this->load->view('fluxo_caixa', $data);
     }
 }
