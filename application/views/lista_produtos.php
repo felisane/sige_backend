@@ -17,70 +17,43 @@
 <div class="container-fluid">
       <h4 class="mb-4">Lista de Produtos</h4>
 
-      <div class="row g-3 mb-4">
-        <div class="col-lg-6">
-          <div class="card h-100 border-danger">
-            <div class="card-header bg-danger text-white">
-              Produtos fora de estoque
-            </div>
-            <div class="card-body">
-              <?php if (!empty($produtos_sem_estoque)): ?>
-                <ul class="list-group list-group-flush">
-                  <?php foreach ($produtos_sem_estoque as $produto_sem_estoque): ?>
-                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                      <div>
-                        <div class="fw-semibold"><?= $produto_sem_estoque->nome; ?></div>
-                        <small class="text-muted"><?= $produto_sem_estoque->categoria; ?></small>
-                      </div>
-                      <span class="badge bg-danger"><i class="bi bi-exclamation-triangle me-1"></i>Sem estoque</span>
-                    </li>
-                  <?php endforeach; ?>
-                </ul>
-              <?php else: ?>
-                <p class="text-muted mb-0">Nenhum produto está fora de estoque no momento.</p>
-              <?php endif; ?>
-            </div>
-          </div>
-        </div>
-        <div class="col-lg-6">
-          <div class="card h-100 border-success">
-            <div class="card-header bg-success text-white">
-              Produtos mais vendidos
-            </div>
-            <div class="card-body">
-              <?php if (!empty($mais_vendidos)): ?>
-                <ul class="list-group list-group-flush">
-                  <?php foreach ($mais_vendidos as $produto_mais_vendido): ?>
-                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                      <div>
-                        <div class="fw-semibold"><?= $produto_mais_vendido->nome; ?></div>
-                        <small class="text-muted"><?= $produto_mais_vendido->categoria; ?></small>
-                      </div>
-                      <span class="badge bg-success"><i class="bi bi-star-fill me-1"></i><?= (int) $produto_mais_vendido->total_vendido; ?> vendidos</span>
-                    </li>
-                  <?php endforeach; ?>
-                </ul>
-              <?php else: ?>
-                <p class="text-muted mb-0">Ainda não há produtos com vendas registradas.</p>
-              <?php endif; ?>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="d-flex flex-wrap gap-2 mb-3">
-        <button type="button" class="btn btn-outline-danger" id="filterOutOfStock" aria-pressed="false">
-          <i class="bi bi-exclamation-circle me-1"></i> Fora de estoque
-        </button>
-        <button type="button" class="btn btn-outline-success" id="filterTopSellers" aria-pressed="false">
-          <i class="bi bi-star me-1"></i> Mais vendidos
-        </button>
-        <button type="button" class="btn btn-outline-secondary" id="clearFilters" disabled>
-          <i class="bi bi-x-circle me-1"></i> Limpar filtros
-        </button>
-      </div>
+      <?php
+        $totalSemEstoque = isset($produtos_sem_estoque) && (is_array($produtos_sem_estoque) || $produtos_sem_estoque instanceof \Countable)
+          ? count($produtos_sem_estoque)
+          : 0;
+        $totalMaisVendidos = isset($mais_vendidos) && (is_array($mais_vendidos) || $mais_vendidos instanceof \Countable)
+          ? count($mais_vendidos)
+          : 0;
+      ?>
 
       <div class="card shadow-sm">
+        <div class="card-header bg-white border-0 pb-0">
+          <div class="d-flex flex-column flex-lg-row align-items-lg-center justify-content-between gap-3">
+            <div>
+              <h5 class="mb-1">Produtos cadastrados</h5>
+              <div class="d-flex flex-wrap gap-2">
+                <span class="badge bg-danger-subtle text-danger-emphasis rounded-pill">
+                  <i class="bi bi-exclamation-circle me-1"></i> Fora de estoque: <?= $totalSemEstoque; ?>
+                </span>
+                <span class="badge bg-success-subtle text-success-emphasis rounded-pill">
+                  <i class="bi bi-star me-1"></i> Mais vendidos: <?= $totalMaisVendidos; ?>
+                </span>
+              </div>
+            </div>
+            <div class="d-flex flex-wrap gap-2">
+              <button type="button" class="btn btn-outline-danger" id="filterOutOfStock" aria-pressed="false">
+                <i class="bi bi-exclamation-circle me-1"></i> Fora de estoque
+              </button>
+              <button type="button" class="btn btn-outline-success" id="filterTopSellers" aria-pressed="false">
+                <i class="bi bi-star me-1"></i> Mais vendidos
+              </button>
+              <button type="button" class="btn btn-outline-secondary" id="clearFilters" disabled>
+                <i class="bi bi-x-circle me-1"></i> Limpar filtros
+              </button>
+            </div>
+          </div>
+          <p class="text-muted small mb-0 mt-3">Utilize os filtros para destacar rapidamente produtos fora de estoque ou os mais vendidos diretamente na tabela principal.</p>
+        </div>
         <div class="card-body">
           <div class="table-responsive">
           <table class="table table-bordered table-striped datatable" id="tabelaProdutos">
