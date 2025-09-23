@@ -11,7 +11,22 @@ class Produtos extends MY_Controller {
 
     public function lista()
     {
-        $data['produtos'] = $this->Produto_model->todos();
+        $produtos = $this->Produto_model->todos();
+        $produtosSemEstoque = $this->Produto_model->fora_de_estoque();
+        $maisVendidos = $this->Produto_model->mais_vendidos();
+
+        $maisVendidosMapa = [];
+        foreach ($maisVendidos as $produto) {
+            $maisVendidosMapa[$produto->id] = (int) $produto->total_vendido;
+        }
+
+        $data = [
+            'produtos' => $produtos,
+            'produtos_sem_estoque' => $produtosSemEstoque,
+            'mais_vendidos' => $maisVendidos,
+            'mais_vendidos_mapa' => $maisVendidosMapa,
+        ];
+
         $this->load->view('lista_produtos', $data);
     }
 

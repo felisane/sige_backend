@@ -16,6 +16,70 @@
 <div class="content">
 <div class="container-fluid">
       <h4 class="mb-4">Lista de Produtos</h4>
+
+      <div class="row g-3 mb-4">
+        <div class="col-lg-6">
+          <div class="card h-100 border-danger">
+            <div class="card-header bg-danger text-white">
+              Produtos fora de estoque
+            </div>
+            <div class="card-body">
+              <?php if (!empty($produtos_sem_estoque)): ?>
+                <ul class="list-group list-group-flush">
+                  <?php foreach ($produtos_sem_estoque as $produto_sem_estoque): ?>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                      <div>
+                        <div class="fw-semibold"><?= $produto_sem_estoque->nome; ?></div>
+                        <small class="text-muted"><?= $produto_sem_estoque->categoria; ?></small>
+                      </div>
+                      <span class="badge bg-danger"><i class="bi bi-exclamation-triangle me-1"></i>Sem estoque</span>
+                    </li>
+                  <?php endforeach; ?>
+                </ul>
+              <?php else: ?>
+                <p class="text-muted mb-0">Nenhum produto está fora de estoque no momento.</p>
+              <?php endif; ?>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-6">
+          <div class="card h-100 border-success">
+            <div class="card-header bg-success text-white">
+              Produtos mais vendidos
+            </div>
+            <div class="card-body">
+              <?php if (!empty($mais_vendidos)): ?>
+                <ul class="list-group list-group-flush">
+                  <?php foreach ($mais_vendidos as $produto_mais_vendido): ?>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                      <div>
+                        <div class="fw-semibold"><?= $produto_mais_vendido->nome; ?></div>
+                        <small class="text-muted"><?= $produto_mais_vendido->categoria; ?></small>
+                      </div>
+                      <span class="badge bg-success"><i class="bi bi-star-fill me-1"></i><?= (int) $produto_mais_vendido->total_vendido; ?> vendidos</span>
+                    </li>
+                  <?php endforeach; ?>
+                </ul>
+              <?php else: ?>
+                <p class="text-muted mb-0">Ainda não há produtos com vendas registradas.</p>
+              <?php endif; ?>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="d-flex flex-wrap gap-2 mb-3">
+        <button type="button" class="btn btn-outline-danger" id="filterOutOfStock" aria-pressed="false">
+          <i class="bi bi-exclamation-circle me-1"></i> Fora de estoque
+        </button>
+        <button type="button" class="btn btn-outline-success" id="filterTopSellers" aria-pressed="false">
+          <i class="bi bi-star me-1"></i> Mais vendidos
+        </button>
+        <button type="button" class="btn btn-outline-secondary" id="clearFilters" disabled>
+          <i class="bi bi-x-circle me-1"></i> Limpar filtros
+        </button>
+      </div>
+
       <div class="card shadow-sm">
         <div class="card-body">
           <div class="table-responsive">
@@ -33,14 +97,43 @@
             </thead>
             <tbody>
               <?php if (!empty($produtos)): ?>
+                <?php $maisVendidosMapa = isset($mais_vendidos_mapa) ? $mais_vendidos_mapa : []; ?>
                 <?php foreach ($produtos as $produto): ?>
-                  <tr>
+                  <?php
+                    $estoqueAtual = (int) $produto->estoque;
+                    $estaSemEstoque = $estoqueAtual <= 0;
+                    $totalVendido = isset($maisVendidosMapa[$produto->id]) ? (int) $maisVendidosMapa[$produto->id] : 0;
+                    $rowClasses = [];
+
+                    if ($estaSemEstoque) {
+                        $rowClasses[] = 'table-danger';
+                        $rowClasses[] = 'produto-sem-estoque';
+                    }
+
+                    if ($totalVendido > 0) {
+                        if (!$estaSemEstoque) {
+                            $rowClasses[] = 'table-success';
+                        }
+                        $rowClasses[] = 'produto-mais-vendido';
+                    }
+                  ?>
+                  <tr<?php if (!empty($rowClasses)): ?> class="<?= implode(' ', $rowClasses); ?>"<?php endif; ?>>
                     <td><?= $produto->id; ?></td>
                     <td><img src="<?= base_url('uploads/' . $produto->imagem); ?>" alt="<?= $produto->nome; ?>" class="img-thumbnail" style="width:50px;cursor:pointer;" data-bs-toggle="modal" data-bs-target="#imageModal" data-image="<?= base_url('uploads/' . $produto->imagem); ?>"></td>
-                    <td><?= $produto->nome; ?></td>
+                    <td>
+                      <?= $produto->nome; ?>
+                      <?php if ($totalVendido > 0): ?>
+                        <span class="badge bg-success ms-2"><i class="bi bi-star-fill me-1"></i>Mais vendido</span>
+                      <?php endif; ?>
+                    </td>
                     <td><?= $produto->categoria; ?></td>
                     <td>Kz <?= number_format($produto->preco, 2, ',', '.'); ?></td>
-                    <td><?= $produto->estoque; ?></td>
+                    <td>
+                      <?= $estoqueAtual; ?>
+                      <?php if ($estaSemEstoque): ?>
+                        <span class="badge bg-danger ms-2"><i class="bi bi-exclamation-triangle me-1"></i>Sem estoque</span>
+                      <?php endif; ?>
+                    </td>
                     <td>
                       <button class="btn btn-sm btn-info me-1" data-bs-toggle="modal" data-bs-target="#infoModal" data-nome="<?= $produto->nome; ?>" data-descricao="<?= $produto->descricao; ?>"><i class="bi bi-info-circle"></i></button>
                       <button class="btn btn-sm btn-primary me-1" onclick="window.location.href='<?= site_url('produtos/editar/' . $produto->id); ?>'"><i class="bi bi-pencil"></i></button>
@@ -149,6 +242,67 @@
   <script>
     $(document).ready(function () {
       const tabela = $('#tabelaProdutos').DataTable();
+
+      const filterOutOfStockBtn = document.getElementById('filterOutOfStock');
+      const filterTopSellersBtn = document.getElementById('filterTopSellers');
+      const clearFiltersBtn = document.getElementById('clearFilters');
+
+      if (filterOutOfStockBtn && filterTopSellersBtn && clearFiltersBtn) {
+        let currentFilter = null;
+
+        function updateFilterButtons() {
+          filterOutOfStockBtn.classList.toggle('active', currentFilter === 'outOfStock');
+          filterOutOfStockBtn.setAttribute('aria-pressed', currentFilter === 'outOfStock' ? 'true' : 'false');
+          filterTopSellersBtn.classList.toggle('active', currentFilter === 'topSellers');
+          filterTopSellersBtn.setAttribute('aria-pressed', currentFilter === 'topSellers' ? 'true' : 'false');
+          clearFiltersBtn.disabled = currentFilter === null;
+        }
+
+        $.fn.dataTable.ext.search.push(function (settings, data, dataIndex) {
+          if (settings.nTable.id !== 'tabelaProdutos') {
+            return true;
+          }
+
+          if (!currentFilter) {
+            return true;
+          }
+
+          const row = settings.aoData[dataIndex].nTr;
+          if (!row) {
+            return true;
+          }
+
+          if (currentFilter === 'outOfStock') {
+            return row.classList.contains('produto-sem-estoque');
+          }
+
+          if (currentFilter === 'topSellers') {
+            return row.classList.contains('produto-mais-vendido');
+          }
+
+          return true;
+        });
+
+        filterOutOfStockBtn.addEventListener('click', function () {
+          currentFilter = currentFilter === 'outOfStock' ? null : 'outOfStock';
+          updateFilterButtons();
+          tabela.draw();
+        });
+
+        filterTopSellersBtn.addEventListener('click', function () {
+          currentFilter = currentFilter === 'topSellers' ? null : 'topSellers';
+          updateFilterButtons();
+          tabela.draw();
+        });
+
+        clearFiltersBtn.addEventListener('click', function () {
+          currentFilter = null;
+          updateFilterButtons();
+          tabela.draw();
+        });
+
+        updateFilterButtons();
+      }
 
         const infoModal = document.getElementById('infoModal');
         infoModal.addEventListener('show.bs.modal', function (event) {
