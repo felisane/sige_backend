@@ -96,7 +96,11 @@
                     <td>
                       <?= $produto->nome; ?>
                       <?php if ($totalVendido > 0): ?>
-                        <span class="badge bg-success ms-2"><i class="bi bi-star-fill me-1"></i>Mais vendido</span>
+                        <?php $textoQuantidadeVendida = $totalVendido === 1 ? '1 unidade vendida' : $totalVendido . ' unidades vendidas'; ?>
+                        <span class="badge bg-success ms-2">
+                          <i class="bi bi-star-fill me-1"></i>
+                          Mais vendido (<?= $textoQuantidadeVendida; ?>)
+                        </span>
                       <?php endif; ?>
                     </td>
                     <td><?= $produto->categoria; ?></td>
