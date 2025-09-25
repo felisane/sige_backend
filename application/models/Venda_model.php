@@ -32,6 +32,29 @@ class Venda_model extends CI_Model {
             ->result();
     }
 
+    public function remover($id)
+    {
+        $venda = $this->db->get_where('vendas', ['id' => $id])->row();
+
+        if (!$venda) {
+            return 'not_found';
+        }
+
+        $this->db->trans_start();
+
+        $this->db->delete('vendas', ['id' => $id]);
+
+        if ((int) $venda->quantidade > 0) {
+            $this->db->set('estoque', 'estoque + ' . (int) $venda->quantidade, false);
+            $this->db->where('nome', $venda->produto);
+            $this->db->update('produtos');
+        }
+
+        $this->db->trans_complete();
+
+        return $this->db->trans_status() ? 'deleted' : false;
+    }
+
     public function por_cliente($cliente)
     {
         return $this->db

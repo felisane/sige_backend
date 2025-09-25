@@ -48,7 +48,14 @@
             <td data-order="<?= $v->valor * $v->quantidade; ?>">
               <?= number_format($v->valor * $v->quantidade, 2, ',', '.'); ?>
             </td>
-            <td><button class="btn btn-sm btn-outline-primary imprimir"><i class="bi bi-printer"></i></button></td>
+            <td>
+              <div class="btn-group" role="group">
+                <button class="btn btn-sm btn-outline-primary imprimir" title="Imprimir"><i class="bi bi-printer"></i></button>
+                <?php if (!empty($is_admin) && $is_admin): ?>
+                <button class="btn btn-sm btn-outline-danger apagar" title="Apagar"><i class="bi bi-trash"></i></button>
+                <?php endif; ?>
+              </div>
+            </td>
           </tr>
           <?php endforeach; ?>
         </tbody>
@@ -180,22 +187,50 @@
       pdfMake.createPdf(docDefinition).open();
     }
 
-  document.addEventListener('DOMContentLoaded', function () {
-    document.querySelectorAll('button.imprimir').forEach(btn => {
-      btn.addEventListener('click', function () {
-        const tr = this.closest('tr');
-        const venda = {
-          id: tr.dataset.id,
-          data: tr.dataset.data,
-          cliente: tr.dataset.cliente,
-          produto: tr.dataset.produto,
-          descricao: tr.dataset.descricao,
-          quantidade: tr.dataset.quantidade,
-          valor: tr.dataset.valor
-        };
-        gerarPdf(venda);
-      });
+  $(document).ready(function () {
+    const tabela = $('#tabelaVendas').DataTable();
+
+    $('#tabelaVendas').on('click', 'button.imprimir', function () {
+      const tr = this.closest('tr');
+      const venda = {
+        id: tr.dataset.id,
+        data: tr.dataset.data,
+        cliente: tr.dataset.cliente,
+        produto: tr.dataset.produto,
+        descricao: tr.dataset.descricao,
+        quantidade: tr.dataset.quantidade,
+        valor: tr.dataset.valor
+      };
+      gerarPdf(venda);
     });
+
+    <?php if (!empty($is_admin) && $is_admin): ?>
+    $('#tabelaVendas').on('click', 'button.apagar', function () {
+      const tr = this.closest('tr');
+      const vendaId = tr.dataset.id;
+
+      if (!confirm('Deseja realmente apagar esta venda?')) {
+        return;
+      }
+
+      fetch('<?= site_url('vendas/apagar'); ?>/' + vendaId, {
+        method: 'POST',
+        headers: { 'X-Requested-With': 'XMLHttpRequest' }
+      })
+        .then(response => response.json().then(data => ({ status: response.status, body: data })))
+        .then(({ status, body }) => {
+          if (status >= 200 && status < 300 && body.status === 'success') {
+            tabela.row($(tr)).remove().draw();
+            alert('Venda apagada com sucesso.');
+          } else {
+            alert(body.message || 'Não foi possível apagar a venda.');
+          }
+        })
+        .catch(() => {
+          alert('Ocorreu um erro ao tentar apagar a venda.');
+        });
+    });
+    <?php endif; ?>
   });
 </script>
 </body>
