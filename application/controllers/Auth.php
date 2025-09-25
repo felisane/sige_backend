@@ -3,8 +3,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Auth extends CI_Controller {
     private $users = [
-        ['username' => 'admin', 'password' => 'admin123', 'level' => '1'],
-        ['username' => 'manager', 'password' => 'manager123', 'level' => '2'],
+        ['username' => 'felisane', 'password' => 'felisane123', 'level' => '1'],
+        ['username' => 'esmeralda', 'password' => 'esmeralda123', 'level' => '2'],
         ['username' => 'user', 'password' => 'user123', 'level' => '3'],
     ];
 
