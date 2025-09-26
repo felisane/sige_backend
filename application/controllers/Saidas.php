@@ -22,8 +22,20 @@ class Saidas extends MY_Controller {
 
     public function salvar()
     {
+        $data_saida = $this->input->post('data');
+
+        if (!$this->is_valid_non_future_date($data_saida)) {
+            $this->output
+                ->set_content_type('application/json')
+                ->set_output(json_encode([
+                    'status' => 'error',
+                    'message' => 'A data da saída não pode ser futura.'
+                ]));
+            return;
+        }
+
         $saida = [
-            'data' => $this->input->post('data'),
+            'data' => $data_saida,
             'descricao' => $this->input->post('descricao'),
             'valor' => $this->input->post('valor'),
             'forma_pagamento' => $this->input->post('forma_pagamento'),
