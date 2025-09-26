@@ -140,22 +140,91 @@ class Caixa extends MY_Controller {
         }
 
         $this->output->set_content_type('application/json');
+        $payload = json_decode($this->input->raw_input_stream, true);
 
-        $periodo = $this->Caixa_periodo_model->fechar($this->obter_usuario_atual());
-
-        if (!$periodo) {
+        if (!is_array($payload)) {
             $this->output
                 ->set_status_header(400)
                 ->set_output(json_encode([
                     'status' => 'error',
-                    'message' => 'Não há período de caixa em aberto para ser fechado.',
+                    'message' => 'Os dados informados são inválidos.',
+                ]));
+            return;
+        }
+
+        $erros = [];
+
+        $totais = [
+            'dinheiro' => isset($payload['dinheiro']) ? $payload['dinheiro'] : null,
+            'pos' => isset($payload['pos']) ? $payload['pos'] : null,
+            'transferencias' => isset($payload['transferencias']) ? $payload['transferencias'] : null,
+        ];
+        $nomes_campos = [
+            'dinheiro' => 'Dinheiro',
+            'pos' => 'POS',
+            'transferencias' => 'Transferências',
+        ];
+
+        foreach ($totais as $campo => $valor) {
+            if ($valor === null || $valor === '') {
+                $erros[] = sprintf('Informe o total para %s.', $nomes_campos[$campo]);
+                continue;
+            }
+
+            if (!is_numeric($valor)) {
+                $erros[] = sprintf('O valor informado para %s é inválido.', $nomes_campos[$campo]);
+                continue;
+            }
+
+            if ((float) $valor < 0) {
+                $erros[] = sprintf('O total de %s não pode ser negativo.', $nomes_campos[$campo]);
+            }
+        }
+
+        $confirmacao = isset($payload['confirmacao']) ? $payload['confirmacao'] : null;
+        $confirmado = in_array($confirmacao, [true, 'true', 1, '1', 'on'], true);
+        if (!$confirmado) {
+            $erros[] = 'É necessário confirmar a conferência do responsável para fechar o caixa.';
+        }
+
+        if (!empty($erros)) {
+            $this->output
+                ->set_status_header(400)
+                ->set_output(json_encode([
+                    'status' => 'error',
+                    'message' => implode(' ', $erros),
+                ]));
+            return;
+        }
+
+        $observacoes = isset($payload['observacoes']) ? trim($payload['observacoes']) : null;
+        if ($observacoes === '') {
+            $observacoes = null;
+        }
+
+        $dados_fechamento = [
+            'dinheiro' => (float) $totais['dinheiro'],
+            'pos' => (float) $totais['pos'],
+            'transferencias' => (float) $totais['transferencias'],
+            'observacoes' => $observacoes,
+            'confirmacao' => $confirmado,
+        ];
+
+        $resultado = $this->Caixa_periodo_model->fechar($this->obter_usuario_atual(), $dados_fechamento);
+
+        if (!$resultado['success']) {
+            $this->output
+                ->set_status_header($resultado['status_code'])
+                ->set_output(json_encode([
+                    'status' => 'error',
+                    'message' => $resultado['message'],
                 ]));
             return;
         }
 
         $this->output->set_output(json_encode([
             'status' => 'success',
-            'periodo' => $this->formatar_periodo($periodo),
+            'periodo' => $this->formatar_periodo($resultado['periodo']),
         ]));
     }
 
@@ -173,6 +242,13 @@ class Caixa extends MY_Controller {
             'fechamento_formatado' => $periodo->fechamento ? $this->formatar_data_hora($periodo->fechamento) : null,
             'usuario_abertura' => $periodo->usuario_abertura,
             'usuario_fechamento' => $periodo->usuario_fechamento,
+            'dinheiro' => isset($periodo->total_dinheiro) ? (float) $periodo->total_dinheiro : null,
+            'pos' => isset($periodo->total_pos) ? (float) $periodo->total_pos : null,
+            'transferencias' => isset($periodo->total_transferencias) ? (float) $periodo->total_transferencias : null,
+            'observacoes' => isset($periodo->observacoes_fechamento) ? $periodo->observacoes_fechamento : null,
+            'confirmacao_responsavel' => isset($periodo->confirmacao_responsavel)
+                ? (bool) $periodo->confirmacao_responsavel
+                : null,
         ];
     }
 
