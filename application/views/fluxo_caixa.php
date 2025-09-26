@@ -22,6 +22,24 @@
 
       <div class="card mb-4">
         <div class="card-body">
+          <div class="d-flex flex-wrap justify-content-between align-items-start gap-3">
+            <div>
+              <h5 class="card-title mb-1">Status do Caixa</h5>
+              <p class="mb-2 text-muted" id="statusDescricao">Carregando status do caixa...</p>
+              <p class="mb-1"><strong>Início do período:</strong> <span id="infoAberturaAtual">-</span></p>
+              <p class="mb-0"><strong>Fecho do período:</strong> <span id="infoFechamentoAtual">-</span></p>
+            </div>
+            <div class="text-end ms-auto">
+              <div id="statusMensagem" class="small mb-2 d-none"></div>
+              <button type="button" id="btnAbrirCaixa" class="btn btn-success d-none"><i class="bi bi-play-circle"></i> Abrir Caixa</button>
+              <button type="button" id="btnFecharCaixa" class="btn btn-danger d-none"><i class="bi bi-stop-circle"></i> Fechar Caixa</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card mb-4">
+        <div class="card-body">
           <h5 class="card-title">Saldo Atual</h5>
           <p>Entradas: <span id="totalEntradas">Kz 0,00</span></p>
           <p>Saídas: <span id="totalSaidas">Kz 0,00</span></p>
@@ -50,6 +68,29 @@
       </div>
 
       <!-- Filtro Comparativo removido -->
+
+      <div class="card mb-4">
+        <div class="card-body">
+          <h5 class="card-title">Registros de Períodos do Caixa</h5>
+          <div class="table-responsive">
+            <table class="table table-striped align-middle" id="tabelaPeriodos">
+              <thead>
+                <tr>
+                  <th>Abertura</th>
+                  <th>Usuário (abertura)</th>
+                  <th>Fecho</th>
+                  <th>Usuário (fecho)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td colspan="4" class="text-center text-muted">Carregando registros...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
 
       <div class="card mb-4">
         <div class="card-body">
@@ -110,10 +151,117 @@
   <script>
     $(document).ready(function () {
       const tabela = $('#tabelaFluxo').DataTable();
+      const statusDescricao = $('#statusDescricao');
+      const infoAberturaAtual = $('#infoAberturaAtual');
+      const infoFechamentoAtual = $('#infoFechamentoAtual');
+      const btnAbrirCaixa = $('#btnAbrirCaixa');
+      const btnFecharCaixa = $('#btnFecharCaixa');
+      const statusMensagem = $('#statusMensagem');
+      const tabelaPeriodosBody = $('#tabelaPeriodos tbody');
+      const periodosUrl = '<?= site_url('caixa/periodos'); ?>';
+      const abrirUrl = '<?= site_url('caixa/abrir_periodo'); ?>';
+      const fecharUrl = '<?= site_url('caixa/fechar_periodo'); ?>';
+
       $('#tabelaFluxoSearch').on('keyup', function () {
         tabela.search(this.value).draw();
       });
 
+      function mostrarMensagem(texto, sucesso = true) {
+        statusMensagem
+          .toggleClass('d-none', false)
+          .toggleClass('text-success', sucesso)
+          .toggleClass('text-danger', !sucesso)
+          .text(texto);
+      }
+
+      function limparMensagem() {
+        statusMensagem.addClass('d-none').removeClass('text-success text-danger').text('');
+      }
+
+      function atualizarPeriodos() {
+        fetch(periodosUrl)
+          .then((resposta) => resposta.json())
+          .then((dados) => {
+            if (!dados || dados.status !== 'success') {
+              throw new Error();
+            }
+
+            const periodoAtual = dados.periodo_atual;
+            if (periodoAtual) {
+              statusDescricao.text(`Caixa aberto desde ${periodoAtual.abertura_formatada} por ${periodoAtual.usuario_abertura}.`);
+              infoAberturaAtual.text(periodoAtual.abertura_formatada);
+              infoFechamentoAtual.text(periodoAtual.fechamento_formatado ? periodoAtual.fechamento_formatado : 'Em aberto');
+              btnAbrirCaixa.addClass('d-none');
+              btnFecharCaixa.removeClass('d-none');
+            } else {
+              statusDescricao.text('Caixa fechado. Clique em "Abrir Caixa" para iniciar um novo período.');
+              infoAberturaAtual.text('-');
+              infoFechamentoAtual.text('-');
+              btnAbrirCaixa.removeClass('d-none');
+              btnFecharCaixa.addClass('d-none');
+            }
+
+            tabelaPeriodosBody.empty();
+
+            if (!dados.periodos || dados.periodos.length === 0) {
+              tabelaPeriodosBody.append('<tr><td colspan="4" class="text-center text-muted">Nenhum período registrado.</td></tr>');
+              return;
+            }
+
+            dados.periodos.forEach((periodo) => {
+              const linha = $('<tr></tr>');
+              linha.append($('<td></td>').text(periodo.abertura_formatada));
+              linha.append($('<td></td>').text(periodo.usuario_abertura || '-'));
+              if (periodo.fechamento_formatado) {
+                linha.append($('<td></td>').text(periodo.fechamento_formatado));
+              } else {
+                linha.append($('<td></td>').html('<span class="badge bg-warning text-dark">Em aberto</span>'));
+              }
+              linha.append($('<td></td>').text(periodo.usuario_fechamento || '-'));
+              tabelaPeriodosBody.append(linha);
+            });
+
+            limparMensagem();
+          })
+          .catch(() => {
+            statusDescricao.text('Não foi possível carregar o status do caixa. Tente novamente mais tarde.');
+          });
+      }
+
+      function executarAcao(url, botao, mensagemSucesso) {
+        botao.prop('disabled', true);
+        fetch(url, {
+          method: 'POST',
+          headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+          },
+        })
+          .then((resposta) => resposta.json())
+          .then((dados) => {
+            if (dados.status === 'success') {
+              mostrarMensagem(mensagemSucesso, true);
+              atualizarPeriodos();
+            } else {
+              mostrarMensagem(dados.message || 'Ocorreu um erro ao processar a solicitação.', false);
+            }
+          })
+          .catch(() => {
+            mostrarMensagem('Não foi possível completar a operação. Verifique a sua conexão e tente novamente.', false);
+          })
+          .finally(() => {
+            botao.prop('disabled', false);
+          });
+      }
+
+      btnAbrirCaixa.on('click', function () {
+        executarAcao(abrirUrl, btnAbrirCaixa, 'Caixa aberto com sucesso.');
+      });
+
+      btnFecharCaixa.on('click', function () {
+        executarAcao(fecharUrl, btnFecharCaixa, 'Caixa fechado com sucesso.');
+      });
+
+      atualizarPeriodos();
 
       function calcularTotais() {
         let entradas = 0, saidas = 0;

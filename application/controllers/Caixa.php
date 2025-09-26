@@ -9,6 +9,7 @@ class Caixa extends MY_Controller {
         $this->load->model('Saida_model');
         $this->load->model('Cliente_model');
         $this->load->model('Produto_model');
+        $this->load->model('Caixa_periodo_model');
     }
 
     public function nova_venda()
@@ -75,5 +76,123 @@ class Caixa extends MY_Controller {
         $data['vendas'] = $this->Venda_model->todas();
         $data['saidas'] = $this->Saida_model->all('confirmada');
         $this->load->view('fluxo_caixa', $data);
+    }
+
+    public function periodos()
+    {
+        $periodos = array_map(function ($periodo) {
+            return $this->formatar_periodo($periodo);
+        }, $this->Caixa_periodo_model->todos());
+
+        $periodo_atual = $this->Caixa_periodo_model->periodo_atual();
+
+        $this->output
+            ->set_content_type('application/json')
+            ->set_output(json_encode([
+                'status' => 'success',
+                'periodo_atual' => $periodo_atual ? $this->formatar_periodo($periodo_atual) : null,
+                'periodos' => $periodos,
+            ]));
+    }
+
+    public function abrir_periodo()
+    {
+        if ($this->input->method(TRUE) !== 'POST') {
+            show_404();
+            return;
+        }
+
+        $this->output->set_content_type('application/json');
+
+        if ($this->Caixa_periodo_model->periodo_atual()) {
+            $this->output
+                ->set_status_header(409)
+                ->set_output(json_encode([
+                    'status' => 'error',
+                    'message' => 'Já existe um período de caixa em aberto.',
+                ]));
+            return;
+        }
+
+        $periodo = $this->Caixa_periodo_model->abrir($this->obter_usuario_atual());
+
+        if (!$periodo) {
+            $this->output
+                ->set_status_header(500)
+                ->set_output(json_encode([
+                    'status' => 'error',
+                    'message' => 'Não foi possível abrir o caixa.',
+                ]));
+            return;
+        }
+
+        $this->output->set_output(json_encode([
+            'status' => 'success',
+            'periodo' => $this->formatar_periodo($periodo),
+        ]));
+    }
+
+    public function fechar_periodo()
+    {
+        if ($this->input->method(TRUE) !== 'POST') {
+            show_404();
+            return;
+        }
+
+        $this->output->set_content_type('application/json');
+
+        $periodo = $this->Caixa_periodo_model->fechar($this->obter_usuario_atual());
+
+        if (!$periodo) {
+            $this->output
+                ->set_status_header(400)
+                ->set_output(json_encode([
+                    'status' => 'error',
+                    'message' => 'Não há período de caixa em aberto para ser fechado.',
+                ]));
+            return;
+        }
+
+        $this->output->set_output(json_encode([
+            'status' => 'success',
+            'periodo' => $this->formatar_periodo($periodo),
+        ]));
+    }
+
+    private function formatar_periodo($periodo)
+    {
+        if (!$periodo) {
+            return null;
+        }
+
+        return [
+            'id' => (int) $periodo->id,
+            'abertura' => $periodo->abertura,
+            'fechamento' => $periodo->fechamento,
+            'abertura_formatada' => $this->formatar_data_hora($periodo->abertura),
+            'fechamento_formatado' => $periodo->fechamento ? $this->formatar_data_hora($periodo->fechamento) : null,
+            'usuario_abertura' => $periodo->usuario_abertura,
+            'usuario_fechamento' => $periodo->usuario_fechamento,
+        ];
+    }
+
+    private function formatar_data_hora($valor)
+    {
+        if (!$valor) {
+            return null;
+        }
+
+        try {
+            $date = new DateTime($valor);
+            return $date->format('d/m/Y H:i');
+        } catch (Exception $e) {
+            return date('d/m/Y H:i', strtotime($valor));
+        }
+    }
+
+    private function obter_usuario_atual()
+    {
+        $usuario = $this->session->userdata('username');
+        return $usuario ? $usuario : 'Sistema';
     }
 }
