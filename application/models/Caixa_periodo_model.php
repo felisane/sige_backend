@@ -43,26 +43,63 @@ class Caixa_periodo_model extends CI_Model {
         return false;
     }
 
-    public function fechar($usuario)
+    public function fechar($usuario, array $dados = [])
     {
         $periodo = $this->periodo_atual();
 
         if (!$periodo) {
-            return false;
+            return [
+                'success' => false,
+                'status_code' => 400,
+                'message' => 'Não há período de caixa em aberto para ser fechado.',
+            ];
         }
 
-        $dados = [
+        $requeridos = ['dinheiro', 'pos', 'transferencias'];
+        foreach ($requeridos as $campo) {
+            if (!array_key_exists($campo, $dados)) {
+                return [
+                    'success' => false,
+                    'status_code' => 400,
+                    'message' => 'Os dados de fechamento estão incompletos.',
+                ];
+            }
+        }
+
+        $confirmado = filter_var($dados['confirmacao'], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
+        if ($confirmado !== true) {
+            return [
+                'success' => false,
+                'status_code' => 400,
+                'message' => 'A confirmação do responsável é obrigatória para fechar o caixa.',
+            ];
+        }
+
+        $atualizacao = [
             'fechamento' => date('Y-m-d H:i:s'),
             'usuario_fechamento' => $usuario,
+            'total_dinheiro' => isset($dados['dinheiro']) ? (float) $dados['dinheiro'] : null,
+            'total_pos' => isset($dados['pos']) ? (float) $dados['pos'] : null,
+            'total_transferencias' => isset($dados['transferencias']) ? (float) $dados['transferencias'] : null,
+            'observacoes_fechamento' => isset($dados['observacoes']) ? $dados['observacoes'] : null,
+            'confirmacao_responsavel' => $confirmado ? 1 : 0,
         ];
 
         $this->db->where('id', $periodo->id);
 
-        if ($this->db->update('caixa_periodos', $dados)) {
-            return $this->obter($periodo->id);
+        if ($this->db->update('caixa_periodos', $atualizacao)) {
+            return [
+                'success' => true,
+                'status_code' => 200,
+                'periodo' => $this->obter($periodo->id),
+            ];
         }
 
-        return false;
+        return [
+            'success' => false,
+            'status_code' => 500,
+            'message' => 'Não foi possível atualizar o período de caixa.',
+        ];
     }
 
     public function obter($id)
