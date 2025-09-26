@@ -26,6 +26,11 @@ class Caixa extends MY_Controller {
         $data_venda = $this->input->post('data');
         $forma_pagamento = $this->input->post('forma_pagamento');
 
+        if (!$this->is_valid_non_future_date($data_venda)) {
+            echo json_encode(['status' => 'error', 'message' => 'A data da venda não pode ser futura.']);
+            return;
+        }
+
         if (!$cliente || !is_array($produtos)) {
             echo json_encode(['status' => 'error', 'message' => 'Cliente ou produtos inválidos']);
             return;
