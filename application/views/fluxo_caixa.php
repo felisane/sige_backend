@@ -136,6 +136,47 @@
     </div>
   </div>
 
+  <div class="modal fade" id="modalFechoCaixa" tabindex="-1" aria-labelledby="modalFechoCaixaLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="modalFechoCaixaLabel">Confirmar Fecho do Caixa</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+        </div>
+        <div class="modal-body">
+          <form id="formFechoCaixa" novalidate>
+            <div class="mb-3">
+              <label for="fechoDinheiro" class="form-label">Dinheiro (Kz)</label>
+              <input type="number" min="0" step="0.01" class="form-control" id="fechoDinheiro" required>
+            </div>
+            <div class="mb-3">
+              <label for="fechoPos" class="form-label">POS (Kz)</label>
+              <input type="number" min="0" step="0.01" class="form-control" id="fechoPos" required>
+            </div>
+            <div class="mb-3">
+              <label for="fechoTransferencias" class="form-label">Transferências (Kz)</label>
+              <input type="number" min="0" step="0.01" class="form-control" id="fechoTransferencias" required>
+            </div>
+            <div class="mb-3">
+              <label for="fechoObservacoes" class="form-label">Observações</label>
+              <textarea class="form-control" id="fechoObservacoes" rows="3" placeholder="Detalhes adicionais (opcional)"></textarea>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" value="1" id="confirmarResponsavel" required>
+              <label class="form-check-label" for="confirmarResponsavel">
+                Confirmo que os valores informados foram verificados pelo responsável.
+              </label>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="button" class="btn btn-danger" id="confirmarFechoCaixa">Confirmar Fecho</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
   <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
   <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
@@ -157,6 +198,15 @@
       const btnAbrirCaixa = $('#btnAbrirCaixa');
       const btnFecharCaixa = $('#btnFecharCaixa');
       const statusMensagem = $('#statusMensagem');
+      const modalFechoCaixaEl = document.getElementById('modalFechoCaixa');
+      const modalFechoCaixa = new bootstrap.Modal(modalFechoCaixaEl);
+      const formFechoCaixa = $('#formFechoCaixa');
+      const inputDinheiro = $('#fechoDinheiro');
+      const inputPos = $('#fechoPos');
+      const inputTransferencias = $('#fechoTransferencias');
+      const inputObservacoes = $('#fechoObservacoes');
+      const inputConfirmarResponsavel = $('#confirmarResponsavel');
+      const btnConfirmarFechoCaixa = $('#confirmarFechoCaixa');
       const tabelaPeriodosBody = $('#tabelaPeriodos tbody');
       const periodosUrl = '<?= site_url('caixa/periodos'); ?>';
       const abrirUrl = '<?= site_url('caixa/abrir_periodo'); ?>';
@@ -258,7 +308,90 @@
       });
 
       btnFecharCaixa.on('click', function () {
-        executarAcao(fecharUrl, btnFecharCaixa, 'Caixa fechado com sucesso.');
+        formFechoCaixa[0].reset();
+        inputConfirmarResponsavel.prop('checked', false);
+        modalFechoCaixa.show();
+      });
+
+      $(modalFechoCaixaEl).on('hidden.bs.modal', function () {
+        formFechoCaixa[0].reset();
+        inputConfirmarResponsavel.prop('checked', false);
+      });
+
+      function obterValorNumerico(campo, descricao) {
+        const texto = (campo.val() || '').trim();
+        if (texto === '') {
+          mostrarMensagem(`Informe o valor para ${descricao}.`, false);
+          campo.trigger('focus');
+          return null;
+        }
+
+        const numero = Number(texto);
+        if (!Number.isFinite(numero)) {
+          mostrarMensagem(`O valor informado para ${descricao} é inválido.`, false);
+          campo.trigger('focus');
+          return null;
+        }
+
+        if (numero < 0) {
+          mostrarMensagem(`O valor de ${descricao} não pode ser negativo.`, false);
+          campo.trigger('focus');
+          return null;
+        }
+
+        return numero;
+      }
+
+      btnConfirmarFechoCaixa.on('click', function () {
+        const dinheiro = obterValorNumerico(inputDinheiro, 'Dinheiro');
+        if (dinheiro === null) { return; }
+
+        const pos = obterValorNumerico(inputPos, 'POS');
+        if (pos === null) { return; }
+
+        const transferencias = obterValorNumerico(inputTransferencias, 'Transferências');
+        if (transferencias === null) { return; }
+
+        if (!inputConfirmarResponsavel.is(':checked')) {
+          mostrarMensagem('Confirme a verificação do responsável para finalizar o fecho.', false);
+          inputConfirmarResponsavel.trigger('focus');
+          return;
+        }
+
+        const payload = {
+          dinheiro,
+          pos,
+          transferencias,
+          observacoes: (inputObservacoes.val() || '').trim(),
+        };
+
+        btnConfirmarFechoCaixa.prop('disabled', true);
+        mostrarMensagem('Enviando informações para fechar o caixa...', true);
+
+        fetch(fecharUrl, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest',
+          },
+          body: JSON.stringify(payload),
+        })
+          .then((resposta) => resposta.json())
+          .then((dados) => {
+            if (dados.status === 'success') {
+              mostrarMensagem('Caixa fechado com sucesso.', true);
+              modalFechoCaixa.hide();
+              atualizarPeriodos();
+            } else {
+              mostrarMensagem(dados.message || 'Ocorreu um erro ao fechar o caixa.', false);
+            }
+          })
+          .catch(() => {
+            mostrarMensagem('Não foi possível completar a operação. Verifique a sua conexão e tente novamente.', false);
+          })
+          .finally(() => {
+            btnConfirmarFechoCaixa.prop('disabled', false);
+          });
       });
 
       atualizarPeriodos();
