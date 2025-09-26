@@ -185,8 +185,24 @@
 
       const form = document.getElementById('vendaForm');
       const submitBtn = form.querySelector('button[type="submit"]');
+      const dataInput = document.getElementById('dataVenda');
+
+      function isFutureDate(value) {
+        if (!value) {
+          return false;
+        }
+        const selected = new Date(value + 'T00:00:00');
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        return selected > today;
+      }
+
       form.addEventListener('submit', function(e) {
         e.preventDefault();
+        if (isFutureDate(dataInput.value)) {
+          alert('Não é possível registrar uma venda com data futura.');
+          return;
+        }
         const formData = new FormData(form);
         submitBtn.disabled = true;
         toggleLoading(true);

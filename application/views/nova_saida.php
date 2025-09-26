@@ -80,8 +80,25 @@
     toast.style.display = 'none';
   }
 
-  document.getElementById('saidaForm').addEventListener('submit', function(e) {
+  const saidaForm = document.getElementById('saidaForm');
+  const dataSaidaInput = document.getElementById('dataSaida');
+
+  function isFutureDate(value) {
+    if (!value) {
+      return false;
+    }
+    const selected = new Date(value + 'T00:00:00');
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    return selected > today;
+  }
+
+  saidaForm.addEventListener('submit', function(e) {
     e.preventDefault();
+    if (isFutureDate(dataSaidaInput.value)) {
+      alert('Não é possível registrar uma saída com data futura.');
+      return;
+    }
     const formData = new FormData(this);
     fetch('<?= site_url('saidas/salvar'); ?>', {
       method: 'POST',
