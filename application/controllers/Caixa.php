@@ -245,7 +245,7 @@ class Caixa extends MY_Controller {
             'dinheiro' => isset($periodo->total_dinheiro) ? (float) $periodo->total_dinheiro : null,
             'pos' => isset($periodo->total_pos) ? (float) $periodo->total_pos : null,
             'transferencias' => isset($periodo->total_transferencias) ? (float) $periodo->total_transferencias : null,
-            'observacoes' => isset($periodo->observacoes_fechamento) ? $periodo->observacoes_fechamento : null,
+            'observacoes' => isset($periodo->observacoes) ? $periodo->observacoes : null,
             'confirmacao_responsavel' => isset($periodo->confirmacao_responsavel)
                 ? (bool) $periodo->confirmacao_responsavel
                 : null,

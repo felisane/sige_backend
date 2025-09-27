@@ -363,6 +363,7 @@
           pos,
           transferencias,
           observacoes: (inputObservacoes.val() || '').trim(),
+          confirmacao: inputConfirmarResponsavel.is(':checked'),
         };
 
         btnConfirmarFechoCaixa.prop('disabled', true);
