@@ -34,6 +34,11 @@ class Caixa_periodo_model extends CI_Model {
         $dados = [
             'abertura' => date('Y-m-d H:i:s'),
             'usuario_abertura' => $usuario,
+            'total_dinheiro' => '0.00',
+            'total_pos' => '0.00',
+            'total_transferencias' => '0.00',
+            'observacoes' => null,
+            'confirmacao_responsavel' => 0,
         ];
 
         if ($this->db->insert('caixa_periodos', $dados)) {
@@ -78,10 +83,10 @@ class Caixa_periodo_model extends CI_Model {
         $atualizacao = [
             'fechamento' => date('Y-m-d H:i:s'),
             'usuario_fechamento' => $usuario,
-            'total_dinheiro' => isset($dados['dinheiro']) ? (float) $dados['dinheiro'] : null,
-            'total_pos' => isset($dados['pos']) ? (float) $dados['pos'] : null,
-            'total_transferencias' => isset($dados['transferencias']) ? (float) $dados['transferencias'] : null,
-            'observacoes_fechamento' => isset($dados['observacoes']) ? $dados['observacoes'] : null,
+            'total_dinheiro' => isset($dados['dinheiro']) ? (float) $dados['dinheiro'] : 0,
+            'total_pos' => isset($dados['pos']) ? (float) $dados['pos'] : 0,
+            'total_transferencias' => isset($dados['transferencias']) ? (float) $dados['transferencias'] : 0,
+            'observacoes' => isset($dados['observacoes']) ? $dados['observacoes'] : null,
             'confirmacao_responsavel' => $confirmado ? 1 : 0,
         ];
 
